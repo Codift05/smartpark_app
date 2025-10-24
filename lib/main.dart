@@ -18,6 +18,7 @@ class SmartParkingSenseApp extends StatelessWidget {
         brightness: Brightness.light,
         scaffoldBackgroundColor: const Color(0xFFEFF4FA),
       ),
+      debugShowCheckedModeBanner: false,
       home: const HomePage(),
     );
   }
