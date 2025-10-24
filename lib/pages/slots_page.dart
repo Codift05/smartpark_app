@@ -33,12 +33,25 @@ class SlotsPage extends StatelessWidget {
             if (slots == null) {
               return const Center(child: CircularProgressIndicator());
             }
+            // modern header stats
+            final occupiedCount = slots.where((s) => s.occupied).length;
+            final emptyCount = slots.length - occupiedCount;
             return Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Area Parkir', style: AppText.h2(context)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _statChip(context, 'Terisi', occupiedCount, AppColors.blue),
+                      _statChip(context, 'Kosong', emptyCount, Colors.green),
+                      _statChip(context, 'Total', slots.length, AppColors.navy.withValues(alpha: 0.7)),
+                    ],
+                  ),
                   const SizedBox(height: 12),
                   Expanded(
                     child: GridView.builder(
@@ -77,17 +90,29 @@ class SlotsPage extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(color: occupied ? Colors.transparent : Colors.black12),
                                     ),
-                                    child: Text(
-                                      occupied ? 'Terisi' : 'Kosong',
-                                      style: AppText.caption(context).copyWith(color: occupied ? Colors.white : AppColors.navy.withValues(alpha: 0.7)),
+                                    child: Row(
+                                      children: [
+                                        Icon(occupied ? Icons.lock : Icons.lock_open, size: 14, color: occupied ? Colors.white : AppColors.navy.withValues(alpha: 0.7)),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          occupied ? 'Terisi' : 'Kosong',
+                                          style: AppText.caption(context).copyWith(color: occupied ? Colors.white : AppColors.navy.withValues(alpha: 0.7)),
+                                        ),
+                                      ],
                                     ),
                                   )
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              Text(
-                                'Diperbarui ${slot.lastUpdated.hour.toString().padLeft(2, '0')}:${slot.lastUpdated.minute.toString().padLeft(2, '0')}',
-                                style: AppText.caption(context),
+                              Row(
+                                children: [
+                                  const Icon(Icons.schedule, size: 14, color: Colors.black54),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    'Diperbarui ${slot.lastUpdated.hour.toString().padLeft(2, '0')}:${slot.lastUpdated.minute.toString().padLeft(2, '0')}',
+                                    style: AppText.caption(context),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -102,6 +127,25 @@ class SlotsPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: null,
+    );
+  }
+
+  Widget _statChip(BuildContext context, String label, int value, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: color.withValues(alpha: 0.18)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          const SizedBox(width: 8),
+          Text('$label: $value', style: AppText.caption(context).copyWith(color: AppColors.navy)),
+        ],
+      ),
     );
   }
 }
