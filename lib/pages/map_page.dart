@@ -46,13 +46,19 @@ class _MapPageState extends State<MapPage> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: theme.colorScheme.primary.withOpacity(0.35),
+                          color: theme.colorScheme.primary.withValues(
+                            alpha: 0.35,
+                          ),
                           blurRadius: 10,
                           spreadRadius: 1,
-                        )
+                        ),
                       ],
                     ),
-                    child: const Icon(Icons.local_parking, color: Colors.white, size: 26),
+                    child: const Icon(
+                      Icons.local_parking,
+                      color: Colors.white,
+                      size: 26,
+                    ),
                   ),
                 ),
               ],
@@ -69,7 +75,7 @@ class _MapPageState extends State<MapPage> {
                   begin: Alignment.topCenter,
                   end: Alignment.center,
                   colors: [
-                    theme.colorScheme.surface.withOpacity(0.12),
+                    theme.colorScheme.surface.withValues(alpha: 0.12),
                     Colors.transparent,
                   ],
                 ),
@@ -163,13 +169,15 @@ class _MapPageState extends State<MapPage> {
               children: [
                 Text(
                   'Megamas Mall',
-                  style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   '0.8 km • Buka • Kapasitas 12',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onSurface.withOpacity(0.7),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -212,11 +220,11 @@ class _RoundButton extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface.withOpacity(0.95),
+            color: theme.colorScheme.surface.withValues(alpha: 0.95),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -233,7 +241,11 @@ class _FilterChip extends StatelessWidget {
   final String label;
   final bool selected;
   final ValueChanged<bool> onSelected;
-  const _FilterChip({required this.label, required this.selected, required this.onSelected});
+  const _FilterChip({
+    required this.label,
+    required this.selected,
+    required this.onSelected,
+  });
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -242,7 +254,7 @@ class _FilterChip extends StatelessWidget {
       selected: selected,
       onSelected: onSelected,
       labelStyle: theme.textTheme.bodyMedium,
-      selectedColor: theme.colorScheme.primary.withOpacity(0.20),
+      selectedColor: theme.colorScheme.primary.withValues(alpha: 0.20),
     );
   }
 }
@@ -262,11 +274,11 @@ class _Glass extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface.withOpacity(0.85),
+            color: theme.colorScheme.surface.withValues(alpha: 0.85),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.06),
+                color: Colors.black.withValues(alpha: 0.06),
                 blurRadius: 12,
                 offset: const Offset(0, 4),
               ),
