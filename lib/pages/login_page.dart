@@ -77,212 +77,261 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
     const Color tealDark = Color(0xFF00897B);
     const Color teal = Color(0xFF26A69A);
-    const Color tealLight = Color(0xFFA7FFEB);
+    const Color blue = Color.fromARGB(255, 30, 229, 222);
     const Color grayLight = Color(0xFFE5E7EB);
     const Color grayText = Color(0xFF6B7280);
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xFFA7FFEB), Color(0xFFEFF4FA)],
-          ),
-        ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 460),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(28),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x14000000),
-                    blurRadius: 24,
-                    offset: Offset(0, 12),
-                  )
-                ],
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF26A69A), Color.fromARGB(255, 0, 255, 217)],
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Logo dengan bayangan lembut
-                    Container(
-                      margin: const EdgeInsets.only(top: 8, bottom: 16),
-                      decoration: const BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0x22000000),
-                            blurRadius: 18,
-                            offset: Offset(0, 8),
-                          )
-                        ],
-                      ),
-                      child: Image.asset(
-                        'lib/img/Smartpark3.png',
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.contain,
-                        errorBuilder: (_, __, ___) => Icon(
-                          Icons.local_parking,
-                          size: 56,
-                          color: theme.colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'SmartParkingSense',
-                      style: GoogleFonts.poppins(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Masuk untuk melanjutkan',
-                      style: GoogleFonts.poppins(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: grayText,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    if (errorText != null)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.errorContainer,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          errorText!,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.colorScheme.onErrorContainer,
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 12),
-                    Form(
-                      key: formKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: usernameOrEmailCtrl,
-                            decoration: InputDecoration(
-                              labelText: 'Email atau Username',
-                              labelStyle: GoogleFonts.poppins(fontSize: 14),
-                              prefixIcon: const Icon(Icons.person),
-                              filled: true,
-                              fillColor: Colors.white,
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: grayLight),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: teal, width: 2),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            validator: (v) {
-                              if (v == null || v.trim().isEmpty) {
-                                return 'Email/username wajib diisi';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 12),
-                          TextFormField(
-                            controller: passCtrl,
-                            obscureText: !showPassword,
-                            decoration: InputDecoration(
-                              labelText: 'Kata Sandi',
-                              labelStyle: GoogleFonts.poppins(fontSize: 14),
-                              prefixIcon: const Icon(Icons.lock),
-                              filled: true,
-                              fillColor: Colors.white,
-                              suffixIcon: IconButton(
-                                icon: Icon(showPassword ? Icons.visibility_off : Icons.visibility),
-                                onPressed: () => setState(() => showPassword = !showPassword),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: grayLight),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                                borderSide: const BorderSide(color: teal, width: 2),
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            validator: (v) {
-                              if (v == null || v.isEmpty) {
-                                return 'Kata sandi wajib diisi';
-                              }
-                              if (v.length < 6) {
-                                return 'Minimal 6 karakter';
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 18),
-                          SizedBox(
-                            width: double.infinity,
-                            child: FilledButton.icon(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: tealDark,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                                textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
-                              ),
-                              onPressed: loading ? null : _signIn,
-                              icon: loading
-                                  ? const SizedBox(
-                                      height: 20,
-                                      width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                                    )
-                                  : const Icon(Icons.login, color: Colors.white),
-                              label: const Text('Masuk', style: TextStyle(color: Colors.white)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        foregroundColor: teal,
-                        textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-                      ),
-                      onPressed: loading
-                          ? null
-                          : () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (_) => const SignUpPage(),
-                                ),
-                              );
-                            },
-                      child: const Text('Butuh akun? Daftar'),
-                    ),
+            ),
+          ),
+          Positioned(
+            top: -60,
+            left: -40,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(100),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -80,
+            right: -50,
+            child: Container(
+              width: 260,
+              height: 260,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.06),
+                borderRadius: BorderRadius.circular(130),
+              ),
+            ),
+          ),
+          Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 480),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 20,
+                      spreadRadius: 2,
+                      offset: Offset(0, 8),
+                    )
                   ],
+                ),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 8, bottom: 16),
+                        // Hapus shadow
+                        child: Image.asset(
+                          'lib/img/Smartpark.png',
+                          width: 84,
+                          height: 84,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.local_parking,
+                            size: 56,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Login',
+                        style: GoogleFonts.poppins(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: teal,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Masuk untuk melanjutkan',
+                        style: GoogleFonts.poppins(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w400,
+                          color: grayText,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      if (errorText != null)
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.errorContainer,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            errorText!,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onErrorContainer,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 12),
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: usernameOrEmailCtrl,
+                              decoration: InputDecoration(
+                                labelText: 'Email atau Username',
+                                labelStyle: GoogleFonts.poppins(fontSize: 14),
+                                prefixIcon: const Icon(Icons.email),
+                                filled: true,
+                                fillColor: Colors.white,
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide:
+                                      const BorderSide(color: grayLight),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide:
+                                      const BorderSide(color: teal, width: 2),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              validator: (v) {
+                                if (v == null || v.trim().isEmpty) {
+                                  return 'Email/username wajib diisi';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 12),
+                            TextFormField(
+                              controller: passCtrl,
+                              obscureText: !showPassword,
+                              decoration: InputDecoration(
+                                labelText: 'Kata Sandi',
+                                labelStyle: GoogleFonts.poppins(fontSize: 14),
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                filled: true,
+                                fillColor: Colors.white,
+                                suffixIcon: IconButton(
+                                  icon: Icon(showPassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () => setState(
+                                      () => showPassword = !showPassword),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide:
+                                      const BorderSide(color: grayLight),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                  borderSide:
+                                      const BorderSide(color: teal, width: 2),
+                                ),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              validator: (v) {
+                                if (v == null || v.isEmpty) {
+                                  return 'Kata sandi wajib diisi';
+                                }
+                                if (v.length < 6) {
+                                  return 'Minimal 6 karakter';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 18),
+                            SizedBox(
+                              width: double.infinity,
+                              child: FilledButton.icon(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: teal,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  textStyle: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                onPressed: loading ? null : _signIn,
+                                icon: loading
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white),
+                                      )
+                                    : const Icon(Icons.login,
+                                        color: Colors.white),
+                                label: const Text('Masuk',
+                                    style: TextStyle(color: Colors.white)),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Butuh akun? ',
+                            style: GoogleFonts.poppins(
+                                fontSize: 13, color: grayText),
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              foregroundColor: teal,
+                              textStyle: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600),
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: loading
+                                ? null
+                                : () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => const SignUpPage(),
+                                      ),
+                                    );
+                                  },
+                            child: const Text('Daftar'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
