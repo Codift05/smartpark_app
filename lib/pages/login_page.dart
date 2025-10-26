@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'signup_page.dart';
-import '../ui/styles.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -74,45 +75,92 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    const Color tealDark = Color(0xFF00897B);
+    const Color teal = Color(0xFF26A69A);
+    const Color tealLight = Color(0xFFA7FFEB);
+    const Color grayLight = Color(0xFFE5E7EB);
+    const Color grayText = Color(0xFF6B7280);
+
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(gradient: AppGradients.page),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFA7FFEB), Color(0xFFEFF4FA)],
+          ),
+        ),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 420),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+            constraints: const BoxConstraints(maxWidth: 460),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x14000000),
+                    blurRadius: 24,
+                    offset: Offset(0, 12),
+                  )
+                ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.local_parking,
-                      size: 48,
-                      color: theme.colorScheme.primary,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'SmartParkingSense',
-                      style: theme.textTheme.titleLarge,
+                    // Logo dengan bayangan lembut
+                    Container(
+                      margin: const EdgeInsets.only(top: 8, bottom: 16),
+                      decoration: const BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0x22000000),
+                            blurRadius: 18,
+                            offset: Offset(0, 8),
+                          )
+                        ],
+                      ),
+                      child: Image.asset(
+                        'lib/img/Smartpark3.png',
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) => Icon(
+                          Icons.local_parking,
+                          size: 56,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Masuk untuk melanjutkan',
-                      style: theme.textTheme.bodyMedium,
+                      'SmartParkingSense',
+                      style: GoogleFonts.poppins(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Masuk untuk melanjutkan',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: grayText,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
                     if (errorText != null)
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.errorContainer,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           errorText!,
@@ -130,11 +178,21 @@ class _LoginPageState extends State<LoginPage> {
                             controller: usernameOrEmailCtrl,
                             decoration: InputDecoration(
                               labelText: 'Email atau Username',
+                              labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.person),
-                              border: const OutlineInputBorder(),
                               filled: true,
-                              fillColor:
-                                  theme.colorScheme.surfaceContainerHighest,
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: grayLight),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: teal, width: 2),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                             ),
                             validator: (v) {
                               if (v == null || v.trim().isEmpty) {
@@ -149,20 +207,24 @@ class _LoginPageState extends State<LoginPage> {
                             obscureText: !showPassword,
                             decoration: InputDecoration(
                               labelText: 'Kata Sandi',
+                              labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.lock),
-                              border: const OutlineInputBorder(),
                               filled: true,
-                              fillColor:
-                                  theme.colorScheme.surfaceContainerHighest,
+                              fillColor: Colors.white,
                               suffixIcon: IconButton(
-                                icon: Icon(
-                                  showPassword
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () => setState(
-                                  () => showPassword = !showPassword,
-                                ),
+                                icon: Icon(showPassword ? Icons.visibility_off : Icons.visibility),
+                                onPressed: () => setState(() => showPassword = !showPassword),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: grayLight),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: teal, width: 2),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
                             ),
                             validator: (v) {
@@ -175,28 +237,35 @@ class _LoginPageState extends State<LoginPage> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 18),
                           SizedBox(
                             width: double.infinity,
                             child: FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: tealDark,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                              ),
                               onPressed: loading ? null : _signIn,
                               icon: loading
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
+                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                     )
-                                  : const Icon(Icons.login),
-                              label: const Text('Masuk'),
+                                  : const Icon(Icons.login, color: Colors.white),
+                              label: const Text('Masuk', style: TextStyle(color: Colors.white)),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     TextButton(
+                      style: TextButton.styleFrom(
+                        foregroundColor: teal,
+                        textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                      ),
                       onPressed: loading
                           ? null
                           : () {

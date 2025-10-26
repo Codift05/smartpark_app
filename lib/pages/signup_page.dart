@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../ui/styles.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -49,10 +50,11 @@ class _SignUpPageState extends State<SignUpPage> {
         errorText = 'Terjadi kesalahan. Coba lagi.';
       });
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() {
           loading = false;
         });
+      }
     }
   }
 
@@ -72,20 +74,39 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    const Color tealDark = Color(0xFF00897B);
+    const Color teal = Color(0xFF26A69A);
+    const Color tealLight = Color(0xFFA7FFEB);
+    const Color grayLight = Color(0xFFE5E7EB);
+    const Color grayText = Color(0xFF6B7280);
+
     return Scaffold(
       appBar: AppBar(title: const Text('Daftar Akun')),
       body: Container(
-        decoration: BoxDecoration(gradient: AppGradients.page),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFFA7FFEB), Color(0xFFEFF4FA)],
+          ),
+        ),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
-            child: Card(
-              elevation: 0,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Color(0x14000000),
+                    blurRadius: 24,
+                    offset: Offset(0, 12),
+                  )
+                ],
               ),
               child: Padding(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 32),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -95,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
                           color: theme.colorScheme.errorContainer,
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           errorText!,
@@ -104,6 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                       ),
+                    const SizedBox(height: 8),
                     Form(
                       key: formKey,
                       child: Column(
@@ -112,15 +134,26 @@ class _SignUpPageState extends State<SignUpPage> {
                             controller: usernameCtrl,
                             decoration: InputDecoration(
                               labelText: 'Username (atau email)',
+                              labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.person),
-                              border: const OutlineInputBorder(),
                               filled: true,
-                              fillColor:
-                                  theme.colorScheme.surfaceContainerHighest,
+                              fillColor: Colors.white,
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: grayLight),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: teal, width: 2),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
                             ),
                             validator: (v) {
-                              if (v == null || v.trim().isEmpty)
+                              if (v == null || v.trim().isEmpty) {
                                 return 'Username wajib diisi';
+                              }
                               return null;
                             },
                           ),
@@ -130,24 +163,30 @@ class _SignUpPageState extends State<SignUpPage> {
                             obscureText: !showPass,
                             decoration: InputDecoration(
                               labelText: 'Kata Sandi',
+                              labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.lock),
-                              border: const OutlineInputBorder(),
                               filled: true,
-                              fillColor:
-                                  theme.colorScheme.surfaceContainerHighest,
+                              fillColor: Colors.white,
                               suffixIcon: IconButton(
-                                icon: Icon(
-                                  showPass
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () =>
-                                    setState(() => showPass = !showPass),
+                                icon: Icon(showPass ? Icons.visibility_off : Icons.visibility),
+                                onPressed: () => setState(() => showPass = !showPass),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: grayLight),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: teal, width: 2),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
                             ),
                             validator: (v) {
-                              if (v == null || v.isEmpty)
+                              if (v == null || v.isEmpty) {
                                 return 'Kata sandi wajib diisi';
+                              }
                               if (v.length < 6) return 'Minimal 6 karakter';
                               return null;
                             },
@@ -158,51 +197,62 @@ class _SignUpPageState extends State<SignUpPage> {
                             obscureText: !showConfirm,
                             decoration: InputDecoration(
                               labelText: 'Ulangi Kata Sandi',
+                              labelStyle: GoogleFonts.poppins(fontSize: 14),
                               prefixIcon: const Icon(Icons.lock_outline),
-                              border: const OutlineInputBorder(),
                               filled: true,
-                              fillColor:
-                                  theme.colorScheme.surfaceContainerHighest,
+                              fillColor: Colors.white,
                               suffixIcon: IconButton(
-                                icon: Icon(
-                                  showConfirm
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                ),
-                                onPressed: () =>
-                                    setState(() => showConfirm = !showConfirm),
+                                icon: Icon(showConfirm ? Icons.visibility_off : Icons.visibility),
+                                onPressed: () => setState(() => showConfirm = !showConfirm),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: grayLight),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: const BorderSide(color: teal, width: 2),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
                             ),
                             validator: (v) {
-                              if (v != passCtrl.text)
+                              if (v != passCtrl.text) {
                                 return 'Kata sandi tidak sama';
+                              }
                               return null;
                             },
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 18),
                           SizedBox(
                             width: double.infinity,
                             child: FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                backgroundColor: tealDark,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                              ),
                               onPressed: loading ? null : _signUp,
                               icon: loading
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
+                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                     )
-                                  : const Icon(Icons.person_add),
-                              label: const Text('Buat Akun'),
+                                  : const Icon(Icons.person_add, color: Colors.white),
+                              label: const Text('Buat Akun', style: TextStyle(color: Colors.white)),
                             ),
                           ),
                           const SizedBox(height: 8),
                           TextButton(
-                            onPressed: loading
-                                ? null
-                                : () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              foregroundColor: teal,
+                              textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+                            ),
+                            onPressed: loading ? null : () => Navigator.pop(context),
                             child: const Text('Sudah punya akun? Masuk'),
-                          ),
+                          )
                         ],
                       ),
                     ),

@@ -12,7 +12,9 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final LatLng center = LatLng(1.484057, 124.834802); // Megamas Mall
+
   final MapController mapController = MapController();
+
   double zoom = 17;
   final Set<String> _filters = {};
 
