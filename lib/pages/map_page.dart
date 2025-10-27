@@ -453,7 +453,7 @@ class _ModernInfoCard extends StatelessWidget {
               const SizedBox(height: 6),
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.location_on,
                     size: 16,
                     color: Colors.black54,

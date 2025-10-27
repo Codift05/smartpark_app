@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
         index: index,
         children: [
           ModernHome(service: service),
-          MapPage(),
+          const MapPage(),
           StatsPage(service: service),
         ],
       ),
@@ -236,7 +236,7 @@ class _AnimatedSlotCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isOccupied = slot.occupied;
-    final accent = const Color(0xFF26A69A); // teal
+    const accent = Color(0xFF26A69A); // teal
     final titleStyle = GoogleFonts.poppins(
       fontSize: 16,
       fontWeight: FontWeight.w600,
@@ -328,7 +328,7 @@ class _AnimatedSlotCard extends StatelessWidget {
 }
 
 Widget _statusChip(bool occupied) {
-  final accent = const Color(0xFF26A69A);
+  const accent = Color(0xFF26A69A);
   return AnimatedContainer(
     duration: const Duration(milliseconds: 200),
     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

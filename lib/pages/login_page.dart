@@ -75,9 +75,10 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    const Color tealDark = Color(0xFF00897B);
-    const Color teal = Color(0xFF26A69A);
-    const Color blue = Color.fromARGB(255, 30, 229, 222);
+    // Konsisten dengan signup_page.dart
+    const Color tealDark = Color.fromARGB(255, 239, 241, 241);
+    const Color teal = Color.fromARGB(255, 239, 241, 241);
+    const Color blue = Color.fromARGB(255, 233, 234, 236);
     const Color grayLight = Color(0xFFE5E7EB);
     const Color grayText = Color(0xFF6B7280);
 
@@ -89,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFF26A69A), Color.fromARGB(255, 0, 255, 217)],
+                colors: [teal, blue],
               ),
             ),
           ),
@@ -161,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
-                          color: teal,
+                          color: Color(0xFF00C298),
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -170,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
-                          color: grayText,
+                          color: const Color(0xFF00C298),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -269,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: double.infinity,
                               child: FilledButton.icon(
                                 style: FilledButton.styleFrom(
-                                  backgroundColor: teal,
+                                  backgroundColor: Color(0xFF00C298),
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -288,7 +289,7 @@ class _LoginPageState extends State<LoginPage> {
                                             color: Colors.white),
                                       )
                                     : const Icon(Icons.login,
-                                        color: Colors.white),
+                                        color: Color(0xFF00C298)),
                                 label: const Text('Masuk',
                                     style: TextStyle(color: Colors.white)),
                               ),
@@ -307,7 +308,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
-                              foregroundColor: teal,
+                              foregroundColor: Color(0xFF00C298),
                               textStyle: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w600),
                               padding: EdgeInsets.zero,

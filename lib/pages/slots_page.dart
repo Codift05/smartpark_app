@@ -16,7 +16,8 @@ class SlotsPage extends StatelessWidget {
         elevation: 0,
         toolbarHeight: 56,
         centerTitle: true,
-        title: const Text('Home', style: TextStyle(fontWeight: FontWeight.w600)),
+        title:
+            const Text('Home', style: TextStyle(fontWeight: FontWeight.w600)),
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 12),
@@ -25,7 +26,7 @@ class SlotsPage extends StatelessWidget {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(gradient: AppGradients.page),
+        decoration: const BoxDecoration(gradient: AppGradients.page),
         child: StreamBuilder<List<ParkingSlot>>(
           stream: service.slotsStream,
           builder: (context, snap) {
@@ -47,9 +48,11 @@ class SlotsPage extends StatelessWidget {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      _statChip(context, 'Terisi', occupiedCount, AppColors.blue),
+                      _statChip(
+                          context, 'Terisi', occupiedCount, AppColors.blue),
                       _statChip(context, 'Kosong', emptyCount, Colors.green),
-                      _statChip(context, 'Total', slots.length, AppColors.navy.withValues(alpha: 0.7)),
+                      _statChip(context, 'Total', slots.length,
+                          AppColors.navy.withValues(alpha: 0.7)),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -57,7 +60,8 @@ class SlotsPage extends StatelessWidget {
                     child: GridView.builder(
                       // scrollable agar tidak overflow
                       itemCount: slots.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
@@ -67,7 +71,9 @@ class SlotsPage extends StatelessWidget {
                         final slot = slots[index];
                         final occupied = slot.occupied;
                         return AppCard(
-                          color: occupied ? AppColors.accent.withValues(alpha: 0.06) : Colors.white,
+                          color: occupied
+                              ? AppColors.accent.withValues(alpha: 0.06)
+                              : Colors.white,
                           padding: const EdgeInsets.all(14),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,27 +82,56 @@ class SlotsPage extends StatelessWidget {
                                 children: [
                                   CircleAvatar(
                                     radius: 18,
-                                    backgroundColor: occupied ? AppColors.blue : AppColors.navy.withValues(alpha: 0.1),
-                                    child: Icon(Icons.local_parking, color: occupied ? Colors.white : AppColors.blue, size: 18),
+                                    backgroundColor: occupied
+                                        ? AppColors.blue
+                                        : AppColors.navy.withValues(alpha: 0.1),
+                                    child: Icon(Icons.local_parking,
+                                        color: occupied
+                                            ? Colors.white
+                                            : AppColors.blue,
+                                        size: 18),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
-                                    child: Text('Slot ${slot.id}', style: AppText.body(context).copyWith(fontWeight: FontWeight.w600)),
+                                    child: Text('Slot ${slot.id}',
+                                        style: AppText.body(context).copyWith(
+                                            fontWeight: FontWeight.w600)),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: occupied ? AppColors.blue : Colors.white,
+                                      color: occupied
+                                          ? AppColors.blue
+                                          : Colors.white,
                                       borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: occupied ? Colors.transparent : Colors.black12),
+                                      border: Border.all(
+                                          color: occupied
+                                              ? Colors.transparent
+                                              : Colors.black12),
                                     ),
                                     child: Row(
                                       children: [
-                                        Icon(occupied ? Icons.lock : Icons.lock_open, size: 14, color: occupied ? Colors.white : AppColors.navy.withValues(alpha: 0.7)),
+                                        Icon(
+                                            occupied
+                                                ? Icons.lock
+                                                : Icons.lock_open,
+                                            size: 14,
+                                            color: occupied
+                                                ? Colors.white
+                                                : AppColors.navy
+                                                    .withValues(alpha: 0.7)),
                                         const SizedBox(width: 6),
                                         Text(
                                           occupied ? 'Terisi' : 'Kosong',
-                                          style: AppText.caption(context).copyWith(color: occupied ? Colors.white : AppColors.navy.withValues(alpha: 0.7)),
+                                          style: AppText.caption(context)
+                                              .copyWith(
+                                                  color: occupied
+                                                      ? Colors.white
+                                                      : AppColors
+                                                          .navy
+                                                          .withValues(
+                                                              alpha: 0.7)),
                                         ),
                                       ],
                                     ),
@@ -106,7 +141,8 @@ class SlotsPage extends StatelessWidget {
                               const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  const Icon(Icons.schedule, size: 14, color: Colors.black54),
+                                  const Icon(Icons.schedule,
+                                      size: 14, color: Colors.black54),
                                   const SizedBox(width: 6),
                                   Text(
                                     'Diperbarui ${slot.lastUpdated.hour.toString().padLeft(2, '0')}:${slot.lastUpdated.minute.toString().padLeft(2, '0')}',
@@ -141,9 +177,13 @@ class SlotsPage extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
+          Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 8),
-          Text('$label: $value', style: AppText.caption(context).copyWith(color: AppColors.navy)),
+          Text('$label: $value',
+              style: AppText.caption(context).copyWith(color: AppColors.navy)),
         ],
       ),
     );

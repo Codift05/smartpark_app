@@ -13,7 +13,8 @@ class StatsPage extends StatefulWidget {
   State<StatsPage> createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMixin {
+class _StatsPageState extends State<StatsPage>
+    with SingleTickerProviderStateMixin {
   // Theme & accents
   static const Color _softPage = Color(0xFFEAF3FF);
   static const Color _white = Colors.white;
@@ -116,8 +117,8 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
                                     height: 44,
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                        colors: const [_gradStart, _gradEnd],
+                                      gradient: const LinearGradient(
+                                        colors: [_gradStart, _gradEnd],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
                                       ),
@@ -129,18 +130,23 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
                                         ),
                                       ],
                                     ),
-                                    child: const Icon(Icons.insights, color: Colors.white),
+                                    child: const Icon(Icons.insights,
+                                        color: Colors.white),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text('Prediksi Kepadatan', style: titleStyle),
+                                        Text('Prediksi Kepadatan',
+                                            style: titleStyle),
                                         const SizedBox(height: 4),
                                         Row(
                                           children: [
-                                            const Icon(Icons.schedule, size: 16, color: Colors.black45),
+                                            const Icon(Icons.schedule,
+                                                size: 16,
+                                                color: Colors.black45),
                                             const SizedBox(width: 6),
                                             Text(
                                               '(${pred.timestamp.hour.toString().padLeft(2, '0')}:${pred.timestamp.minute.toString().padLeft(2, '0')}) • realtime',
@@ -151,17 +157,30 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
                                       ],
                                     ),
                                   ),
-                                  _GradientBadge(text: pred.level, colors: badgeColors),
+                                  _GradientBadge(
+                                      text: pred.level, colors: badgeColors),
                                 ],
                               ),
                               const SizedBox(height: 14),
                               _PulseIcon(controller: _pulseCtrl),
                               const SizedBox(height: 14),
-                              _GradientProgressBar(label: 'Rendah', value: pred.low, start: Colors.greenAccent, end: Colors.green),
+                              _GradientProgressBar(
+                                  label: 'Rendah',
+                                  value: pred.low,
+                                  start: Colors.greenAccent,
+                                  end: Colors.green),
                               const SizedBox(height: 10),
-                              _GradientProgressBar(label: 'Sedang', value: pred.medium, start: Colors.orangeAccent, end: Colors.deepOrange),
+                              _GradientProgressBar(
+                                  label: 'Sedang',
+                                  value: pred.medium,
+                                  start: Colors.orangeAccent,
+                                  end: Colors.deepOrange),
                               const SizedBox(height: 10),
-                              _GradientProgressBar(label: 'Tinggi', value: pred.high, start: Colors.redAccent, end: Colors.red),
+                              _GradientProgressBar(
+                                  label: 'Tinggi',
+                                  value: pred.high,
+                                  start: Colors.redAccent,
+                                  end: Colors.red),
                             ],
                           ),
                         ),
@@ -209,7 +228,8 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
                                     ),
                                   ],
                                 ),
-                                child: const Icon(Icons.bar_chart, color: _accentBlue),
+                                child: const Icon(Icons.bar_chart,
+                                    color: _accentBlue),
                               ),
                               const SizedBox(width: 12),
                               Expanded(
@@ -218,7 +238,8 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
                                   children: [
                                     Text('Statistik Harian', style: titleStyle),
                                     const SizedBox(height: 4),
-                                    Text('Ringkasan penggunaan area parkir', style: subtitleStyle),
+                                    Text('Ringkasan penggunaan area parkir',
+                                        style: subtitleStyle),
                                   ],
                                 ),
                               ),
@@ -229,10 +250,22 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
                             spacing: 12,
                             runSpacing: 12,
                             children: [
-                              _InfoRow(icon: Icons.directions_car, label: 'Terisi', value: '$occ / $total'),
-                              _InfoRow(icon: Icons.speed, label: 'Usage', value: '$usage%'),
-                              _InfoRow(icon: Icons.groups_rounded, label: 'Estimasi kunjungan', value: '$estVisit'),
-                              _InfoRow(icon: Icons.access_time, label: 'Puncak', value: '12:00 - 13:00'),
+                              _InfoRow(
+                                  icon: Icons.directions_car,
+                                  label: 'Terisi',
+                                  value: '$occ / $total'),
+                              _InfoRow(
+                                  icon: Icons.speed,
+                                  label: 'Usage',
+                                  value: '$usage%'),
+                              _InfoRow(
+                                  icon: Icons.groups_rounded,
+                                  label: 'Estimasi kunjungan',
+                                  value: '$estVisit'),
+                              const _InfoRow(
+                                  icon: Icons.access_time,
+                                  label: 'Puncak',
+                                  value: '12:00 - 13:00'),
                             ],
                           ),
                         ],
@@ -265,7 +298,8 @@ class _StatsPageState extends State<StatsPage> with SingleTickerProviderStateMix
 class _GlassCard extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
-  const _GlassCard({required this.child, this.padding = const EdgeInsets.all(16)});
+  const _GlassCard(
+      {required this.child, this.padding = const EdgeInsets.all(16)});
 
   @override
   Widget build(BuildContext context) {
@@ -275,7 +309,10 @@ class _GlassCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.6),
           boxShadow: [
-            BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, 10)),
+            BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 20,
+                offset: const Offset(0, 10)),
           ],
           border: Border.all(color: Colors.white.withOpacity(0.5)),
         ),
@@ -303,15 +340,22 @@ class _GradientBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: colors, begin: Alignment.topLeft, end: Alignment.bottomRight),
+        gradient: LinearGradient(
+            colors: colors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 10,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Text(
         text,
-        style: GoogleFonts.poppins(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
+        style: GoogleFonts.poppins(
+            color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
       ),
     );
   }
@@ -335,7 +379,8 @@ class _PulseIcon extends StatelessWidget {
             child: Opacity(
               opacity: opacity,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 decoration: BoxDecoration(
                   color: const Color(0xFF1E88E5).withOpacity(0.12),
                   borderRadius: BorderRadius.circular(16),
@@ -343,9 +388,14 @@ class _PulseIcon extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.trending_up, color: Color(0xFF1E88E5), size: 18),
+                    const Icon(Icons.trending_up,
+                        color: Color(0xFF1E88E5), size: 18),
                     const SizedBox(width: 6),
-                    Text('Aktif', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: const Color(0xFF1E88E5))),
+                    Text('Aktif',
+                        style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1E88E5))),
                   ],
                 ),
               ),
@@ -362,7 +412,11 @@ class _GradientProgressBar extends StatelessWidget {
   final double value; // 0..1
   final Color start;
   final Color end;
-  const _GradientProgressBar({required this.label, required this.value, required this.start, required this.end});
+  const _GradientProgressBar(
+      {required this.label,
+      required this.value,
+      required this.start,
+      required this.end});
 
   @override
   Widget build(BuildContext context) {
@@ -373,8 +427,16 @@ class _GradientProgressBar extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87)),
-            Text('$percent%', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black54)),
+            Text(label,
+                style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87)),
+            Text('$percent%',
+                style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black54)),
           ],
         ),
         const SizedBox(height: 6),
@@ -388,7 +450,8 @@ class _GradientProgressBar extends StatelessWidget {
                   Container(
                     height: 12,
                     width: width,
-                    decoration: BoxDecoration(color: Colors.black12.withOpacity(0.06)),
+                    decoration:
+                        BoxDecoration(color: Colors.black12.withOpacity(0.06)),
                   ),
                   TweenAnimationBuilder<double>(
                     duration: const Duration(milliseconds: 700),
@@ -399,8 +462,16 @@ class _GradientProgressBar extends StatelessWidget {
                         height: 12,
                         width: width * v,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [start, end], begin: Alignment.centerLeft, end: Alignment.centerRight),
-                          boxShadow: [BoxShadow(color: end.withOpacity(0.25), blurRadius: 8, offset: const Offset(0, 4))],
+                          gradient: LinearGradient(
+                              colors: [start, end],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight),
+                          boxShadow: [
+                            BoxShadow(
+                                color: end.withOpacity(0.25),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4))
+                          ],
                         ),
                       );
                     },
@@ -419,7 +490,8 @@ class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  const _InfoRow({required this.icon, required this.label, required this.value});
+  const _InfoRow(
+      {required this.icon, required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
@@ -435,8 +507,16 @@ class _InfoRow extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: const Color(0xFF3A8DFF)),
           const SizedBox(width: 8),
-          Text('$label: ', style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87)),
-          Text(value, style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.black87)),
+          Text('$label: ',
+              style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87)),
+          Text(value,
+              style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87)),
         ],
       ),
     );
@@ -491,7 +571,11 @@ class _HighlightFlash extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.centerLeft,
               end: Alignment.centerRight,
-              colors: [color.withOpacity(0.0), color.withOpacity(0.15), color.withOpacity(0.0)],
+              colors: [
+                color.withOpacity(0.0),
+                color.withOpacity(0.15),
+                color.withOpacity(0.0)
+              ],
               stops: const [0.0, 0.5, 1.0],
             ),
           ),
