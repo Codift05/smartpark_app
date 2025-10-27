@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
 import 'package:google_fonts/google_fonts.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -135,7 +134,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   ],
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -169,11 +169,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 fillColor: Colors.white,
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: const BorderSide(color: grayLight),
+                                  borderSide:
+                                      const BorderSide(color: grayLight),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: const BorderSide(color: teal, width: 2),
+                                  borderSide:
+                                      const BorderSide(color: teal, width: 2),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -197,16 +199,21 @@ class _SignUpPageState extends State<SignUpPage> {
                                 filled: true,
                                 fillColor: Colors.white,
                                 suffixIcon: IconButton(
-                                  icon: Icon(showPass ? Icons.visibility_off : Icons.visibility),
-                                  onPressed: () => setState(() => showPass = !showPass),
+                                  icon: Icon(showPass
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () =>
+                                      setState(() => showPass = !showPass),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: const BorderSide(color: grayLight),
+                                  borderSide:
+                                      const BorderSide(color: grayLight),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: const BorderSide(color: teal, width: 2),
+                                  borderSide:
+                                      const BorderSide(color: teal, width: 2),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -231,16 +238,21 @@ class _SignUpPageState extends State<SignUpPage> {
                                 filled: true,
                                 fillColor: Colors.white,
                                 suffixIcon: IconButton(
-                                  icon: Icon(showConfirm ? Icons.visibility_off : Icons.visibility),
-                                  onPressed: () => setState(() => showConfirm = !showConfirm),
+                                  icon: Icon(showConfirm
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () => setState(
+                                      () => showConfirm = !showConfirm),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: const BorderSide(color: grayLight),
+                                  borderSide:
+                                      const BorderSide(color: grayLight),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
-                                  borderSide: const BorderSide(color: teal, width: 2),
+                                  borderSide:
+                                      const BorderSide(color: teal, width: 2),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -259,21 +271,27 @@ class _SignUpPageState extends State<SignUpPage> {
                               child: FilledButton.icon(
                                 style: FilledButton.styleFrom(
                                   backgroundColor: teal,
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30),
                                   ),
-                                  textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                                  textStyle: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w700),
                                 ),
                                 onPressed: loading ? null : _signUp,
                                 icon: loading
                                     ? const SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                        child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white),
                                       )
-                                    : const Icon(Icons.person_add, color: Colors.white),
-                                label: const Text('Buat Akun', style: TextStyle(color: Colors.white)),
+                                    : const Icon(Icons.person_add,
+                                        color: Colors.white),
+                                label: const Text('Buat Akun',
+                                    style: TextStyle(color: Colors.white)),
                               ),
                             ),
                             const SizedBox(height: 8),
@@ -282,15 +300,19 @@ class _SignUpPageState extends State<SignUpPage> {
                               children: [
                                 Text(
                                   'Sudah punya akun? ',
-                                  style: GoogleFonts.poppins(fontSize: 13, color: grayText),
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 13, color: grayText),
                                 ),
                                 TextButton(
                                   style: TextButton.styleFrom(
                                     foregroundColor: teal,
-                                    textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+                                    textStyle: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w600),
                                     padding: EdgeInsets.zero,
                                   ),
-                                  onPressed: loading ? null : () => Navigator.pop(context),
+                                  onPressed: loading
+                                      ? null
+                                      : () => Navigator.pop(context),
                                   child: const Text('Masuk'),
                                 )
                               ],

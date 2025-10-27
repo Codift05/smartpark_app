@@ -35,15 +35,16 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _markerAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _markerController, curve: Curves.elasticOut),
     );
-    
+
     _cardAnimation = Tween<Offset>(
       begin: const Offset(0, 1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic));
+    ).animate(
+        CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic));
 
     _markerController.forward();
   }
@@ -94,7 +95,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               ),
               children: [
                 TileLayer(
-                  urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                  urlTemplate:
+                      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
                   subdomains: const ['a', 'b', 'c'],
                   userAgentPackageName: 'smartpark_app',
                 ),
@@ -114,14 +116,18 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                               child: Container(
                                 decoration: BoxDecoration(
                                   gradient: const LinearGradient(
-                                    colors: [Color(0xFF74C0E3), Color(0xFF1E88E5)],
+                                    colors: [
+                                      Color(0xFF74C0E3),
+                                      Color(0xFF1E88E5)
+                                    ],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                   ),
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFF1E88E5).withOpacity(0.4),
+                                      color: const Color(0xFF1E88E5)
+                                          .withOpacity(0.4),
                                       blurRadius: 15,
                                       spreadRadius: 2,
                                       offset: const Offset(0, 8),
@@ -158,7 +164,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                     color: Colors.black54,
                     fontSize: 16,
                   ),
-                  prefixIcon: const Icon(Icons.search, color: Color(0xFF1E88E5)),
+                  prefixIcon:
+                      const Icon(Icons.search, color: Color(0xFF1E88E5)),
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 16),
                 ),
@@ -311,7 +318,7 @@ class _FloatingButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final String? tooltip;
-  
+
   const _FloatingButton({
     required this.icon,
     required this.onTap,
@@ -357,7 +364,7 @@ class _ModernFilterChip extends StatelessWidget {
   final String label;
   final bool selected;
   final ValueChanged<bool> onSelected;
-  
+
   const _ModernFilterChip({
     required this.label,
     required this.selected,
@@ -375,12 +382,12 @@ class _ModernFilterChip extends StatelessWidget {
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            color: selected 
+            color: selected
                 ? const Color(0xFF1E88E5).withOpacity(0.2)
                 : Colors.white.withOpacity(0.9),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
-              color: selected 
+              color: selected
                   ? const Color(0xFF1E88E5)
                   : Colors.grey.withOpacity(0.3),
               width: 1,
@@ -398,9 +405,7 @@ class _ModernFilterChip extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: selected 
-                  ? const Color(0xFF1E88E5)
-                  : Colors.black87,
+              color: selected ? const Color(0xFF1E88E5) : Colors.black87,
             ),
           ),
         ),
@@ -463,7 +468,8 @@ class _ModernInfoCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: Colors.green.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
