@@ -162,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF00C298),
+                          color: const Color(0xFF00C298),
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -270,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
                               width: double.infinity,
                               child: FilledButton.icon(
                                 style: FilledButton.styleFrom(
-                                  backgroundColor: Color(0xFF00C298),
+                                  backgroundColor: const Color(0xFF00C298),
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -308,7 +308,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
-                              foregroundColor: Color(0xFF00C298),
+                              foregroundColor: const Color(0xFF00C298),
                               textStyle: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w600),
                               padding: EdgeInsets.zero,

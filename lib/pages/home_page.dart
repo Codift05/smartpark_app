@@ -3,9 +3,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'dart:ui';
 import '../models/slot.dart';
 import '../services/mock_parking_service.dart';
-import 'slots_page.dart';
+import '../services/user_service.dart';
 import 'map_page.dart';
 import 'stats_page.dart';
+import 'payment_history_page.dart';
+import 'profile_page.dart';
+import 'assistant_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../services/payment_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,7 +28,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    service = MockParkingService(totalSlots: 12)..start();
+    // Pastikan profil user ada di Firestore (auto-provision)
+    UserService.ensureUserProfile();
+    service = MockParkingService(totalSlots: 55)..start();
     service.slotsStream.listen((slots) {
       final occupied = slots.where((s) => s.occupied).length;
       final total = slots.length;
@@ -58,13 +66,28 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: null,
       extendBody: true,
-      body: IndexedStack(
-        index: index,
-        children: [
-          ModernHome(service: service),
-          const MapPage(),
-          StatsPage(service: service),
-        ],
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeOutCubic,
+        transitionBuilder: (child, animation) {
+          final offsetAnim = Tween<Offset>(begin: const Offset(0, 0.02), end: Offset.zero)
+              .animate(animation);
+          final fadeAnim = animation;
+          return FadeTransition(
+            opacity: fadeAnim,
+            child: SlideTransition(position: offsetAnim, child: child),
+          );
+        },
+        child: IndexedStack(
+          key: ValueKey<int>(index),
+          index: index,
+          children: [
+            ModernHome(service: service),
+            const MapPage(),
+            StatsPage(service: service),
+          ],
+        ),
       ),
       bottomNavigationBar: _ModernFloatingNavBar(
         currentIndex: index,
@@ -144,8 +167,79 @@ class ModernHome extends StatelessWidget {
                             color: const Color.fromARGB(255, 0, 57, 50),
                           ),
                         ),
-                        const Icon(Icons.notifications_none,
-                            color: Color.fromARGB(255, 0, 60, 57)),
+                        Row(
+                          children: [
+                            const Icon(Icons.notifications_none,
+                                color: Color.fromARGB(255, 0, 60, 57)),
+                            const SizedBox(width: 8),
+                            PopupMenuButton<String>(
+                              itemBuilder: (context) => const [
+                                PopupMenuItem(
+                                    value: 'history',
+                                    child: Text('Riwayat Pembayaran')),
+                                PopupMenuItem(
+                                    value: 'profile', child: Text('Profil')),
+                                PopupMenuItem(
+                                    value: 'assistant',
+                                    child: Text('Asisten AI')),
+                                PopupMenuItem(
+                                    value: 'demo_pay', child: Text('Demo Pembayaran')),
+                              ],
+                              onSelected: (v) async {
+                                switch (v) {
+                                  case 'history':
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => const PaymentHistoryPage(),
+                                      ),
+                                    );
+                                    break;
+                                  case 'profile':
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => const ProfilePage(),
+                                      ),
+                                    );
+                                    break;
+                                  case 'assistant':
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (_) => const AssistantPage(),
+                                      ),
+                                    );
+                                    break;
+                                  case 'demo_pay':
+                                    try {
+                                      final uid = FirebaseAuth.instance.currentUser?.uid;
+                                      if (uid == null) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text('Harap login terlebih dahulu')),
+                                        );
+                                        break;
+                                      }
+                                      final payment = PaymentService(firestore: FirebaseFirestore.instance);
+                                      final history = await payment.createPayment(
+                                        userId: uid,
+                                        slotId: 'DEMO',
+                                        amount: 5000,
+                                      );
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Transaksi dibuat: ${history.id}')),
+                                      );
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (_) => const PaymentHistoryPage()),
+                                      );
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text('Gagal demo pembayaran: $e')),
+                                      );
+                                    }
+                                    break;
+                                }
+                              },
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -172,12 +266,18 @@ class ModernHome extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Expanded(
-                      child: ListView.builder(
+                      child: GridView.builder(
                         physics: const BouncingScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 5,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 1.0,
+                        ),
                         itemCount: slots.length,
                         itemBuilder: (context, i) {
                           final slot = slots[i];
-                          return _AnimatedSlotCard(slot: slot, index: i);
+                          return _GridSlotTile(slot: slot, index: i);
                         },
                       ),
                     ),
@@ -316,6 +416,8 @@ class _AnimatedSlotCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     _statusChip(isOccupied),
+                    const SizedBox(width: 8),
+                    _PayButton(slot: slot),
                   ],
                 ),
               ),
@@ -354,6 +456,284 @@ Widget _statusChip(bool occupied) {
       ],
     ),
   );
+}
+
+class _GridSlotTile extends StatelessWidget {
+  final ParkingSlot slot;
+  final int index;
+  const _GridSlotTile({required this.slot, required this.index});
+
+  @override
+  Widget build(BuildContext context) {
+    final isOccupied = slot.occupied;
+    const accent = Color(0xFF26A69A);
+    final numberStyle = GoogleFonts.poppins(
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      color: isOccupied ? accent : const Color(0xFF283D4A),
+    );
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0.0, end: 1.0),
+      duration: Duration(milliseconds: 420 + (index * 30)),
+      curve: Curves.easeOutCubic,
+      builder: (context, t, child) {
+        return Opacity(
+          opacity: t,
+          child: Transform.translate(
+            offset: Offset(0, (1 - t) * 12),
+            child: child!,
+          ),
+        );
+      },
+      child: _HoverableCard(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(18),
+            onTap: () => _openPayment(context),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              decoration: BoxDecoration(
+                color: isOccupied ? accent.withOpacity(0.08) : Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
+                border: Border.all(
+                  color: isOccupied ? accent.withOpacity(0.25) : Colors.black12,
+                  width: 1,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: Text('${slot.id}', style: numberStyle),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openPayment(BuildContext context) async {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Harap login terlebih dahulu')),
+      );
+      return;
+    }
+    try {
+      final payment = PaymentService(firestore: FirebaseFirestore.instance);
+      final history = await payment.createPayment(
+        userId: uid,
+        slotId: slot.id.toString(),
+        amount: 5000,
+      );
+    if (!context.mounted) return;
+    const accentPay = Color(0xFF00C298);
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Pembayaran Slot ${slot.id}',
+                      style: GoogleFonts.poppins(
+                          fontSize: 18, fontWeight: FontWeight.w700)),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.black12),
+                ),
+                child: Text(
+                  history.qrPayload ?? 'QR payload tidak tersedia',
+                  style: GoogleFonts.poppins(fontSize: 14),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Batal'),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: accentPay,
+                      ),
+                      onPressed: () async {
+                        await payment.markPaid(history.id);
+                        await payment.adjustBalance(uid, -history.amount);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Pembayaran ditandai lunas'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text('Tandai Lunas'),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal membuat pembayaran: $e')),
+      );
+    }
+  }
+}
+
+class _PayButton extends StatelessWidget {
+  final ParkingSlot slot;
+  const _PayButton({required this.slot});
+
+  @override
+  Widget build(BuildContext context) {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    final payment = PaymentService(firestore: FirebaseFirestore.instance);
+    const accent = Color(0xFF00C298);
+    return FilledButton.icon(
+      style: FilledButton.styleFrom(
+        backgroundColor: accent,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      onPressed: uid == null
+          ? null
+          : () async {
+              try {
+                final history = await payment.createPayment(
+                  userId: uid,
+                  slotId: slot.id.toString(),
+                  amount: 5000,
+                );
+                if (!context.mounted) return;
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.white,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                  ),
+                  builder: (_) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('QR Pembayaran',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w700)),
+                            IconButton(
+                              icon: const Icon(Icons.close),
+                              onPressed: () => Navigator.pop(context),
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.black12),
+                          ),
+                          child: Text(
+                            history.qrPayload ?? 'QR payload tidak tersedia',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Batal'),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: FilledButton(
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: accent,
+                                ),
+                                onPressed: () async {
+                                  await payment.markPaid(history.id);
+                                  await payment.adjustBalance(uid!, -history.amount);
+                                  if (context.mounted) {
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Pembayaran ditandai lunas'),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: const Text('Tandai Lunas'),
+                              ),
+                            ),
+                          ],
+                        )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Gagal membuat pembayaran: $e')),
+                );
+              }
+            },
+      icon: const Icon(Icons.payment, color: Colors.white, size: 18),
+      label: const Text('Bayar', style: TextStyle(color: Colors.white)),
+    );
+  }
 }
 
 class _HoverableCard extends StatefulWidget {
@@ -404,7 +784,7 @@ class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 140),
       vsync: this,
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
@@ -419,10 +799,9 @@ class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
   }
 
   void _onItemTapped(int index) {
-    _animationController.forward().then((_) {
-      _animationController.reverse();
-      widget.onTap(index);
-    });
+    // Jalankan transisi visual nav bar tanpa menunda perpindahan tab
+    widget.onTap(index);
+    _animationController.forward().then((_) => _animationController.reverse());
   }
 
   @override
@@ -430,54 +809,53 @@ class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
     return Container(
       margin: const EdgeInsets.all(20),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(35),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-          child: Container(
-            height: 75,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.85),
-              borderRadius: BorderRadius.circular(35),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.2),
-                width: 1.5,
+        borderRadius: BorderRadius.circular(30),
+        child: Container(
+          height: 70,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.fromARGB(215, 255, 255, 255),
+                Color.fromARGB(215, 248, 250, 252),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.22),
+              width: 1.0,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color.fromARGB(30, 0, 0, 0),
+                blurRadius: 14,
+                offset: Offset(0, 7),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF1E88E5).withOpacity(0.15),
-                  blurRadius: 25,
-                  offset: const Offset(0, 10),
-                ),
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 15,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _NavItem(
-                  icon: Icons.grid_view_rounded,
-                  label: 'Home',
-                  isSelected: widget.currentIndex == 0,
-                  onTap: () => _onItemTapped(0),
-                ),
-                _NavItem(
-                  icon: Icons.map_rounded,
-                  label: 'Map',
-                  isSelected: widget.currentIndex == 1,
-                  onTap: () => _onItemTapped(1),
-                ),
-                _NavItem(
-                  icon: Icons.insights_rounded,
-                  label: 'Stats',
-                  isSelected: widget.currentIndex == 2,
-                  onTap: () => _onItemTapped(2),
-                ),
-              ],
-            ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _NavItem(
+                icon: Icons.grid_view_rounded,
+                label: 'Home',
+                isSelected: widget.currentIndex == 0,
+                onTap: () => _onItemTapped(0),
+              ),
+              _NavItem(
+                icon: Icons.map_rounded,
+                label: 'Map',
+                isSelected: widget.currentIndex == 1,
+                onTap: () => _onItemTapped(1),
+              ),
+              _NavItem(
+                icon: Icons.insights_rounded,
+                label: 'Stats',
+                isSelected: widget.currentIndex == 2,
+                onTap: () => _onItemTapped(2),
+              ),
+            ],
           ),
         ),
       ),
@@ -506,7 +884,8 @@ class _NavItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           decoration: BoxDecoration(
             color: isSelected
@@ -517,8 +896,10 @@ class _NavItem extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
+              AnimatedScale(
+                scale: isSelected ? 1.08 : 1.0,
+                duration: const Duration(milliseconds: 160),
+                curve: Curves.easeOut,
                 child: Icon(
                   icon,
                   color: isSelected
@@ -527,17 +908,23 @@ class _NavItem extends StatelessWidget {
                   size: 24,
                 ),
               ),
-              if (isSelected) ...[
-                const SizedBox(height: 2),
-                Text(
-                  label,
-                  style: GoogleFonts.poppins(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: const Color(0xFF1E88E5),
-                  ),
-                ),
-              ],
+              const SizedBox(height: 2),
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 180),
+                switchInCurve: Curves.easeOutCubic,
+                switchOutCurve: Curves.easeOutCubic,
+                child: isSelected
+                    ? Text(
+                        label,
+                        key: const ValueKey('label-selected'),
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1E88E5),
+                        ),
+                      )
+                    : const SizedBox.shrink(key: ValueKey('label-empty')),
+              ),
             ],
           ),
         ),
