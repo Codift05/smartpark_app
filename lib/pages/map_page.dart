@@ -95,9 +95,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               ),
               children: [
                 TileLayer(
+                  // Basemap ringan dan modern dari Carto (light_all)
                   urlTemplate:
-                      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  subdomains: const ['a', 'b', 'c'],
+                      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                  subdomains: const ['a', 'b', 'c', 'd'],
                   userAgentPackageName: 'smartpark_app',
                 ),
                 MarkerLayer(
@@ -288,12 +289,18 @@ class _ModernGlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(28),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
+      child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
+            // Gradient-only agar ringan namun tetap modern
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.fromARGB(230, 255, 255, 255),
+                Color.fromARGB(230, 248, 250, 252),
+              ],
+            ),
             borderRadius: BorderRadius.circular(28),
             border: Border.all(
               color: Colors.white.withOpacity(0.3),
@@ -309,7 +316,6 @@ class _ModernGlassCard extends StatelessWidget {
           ),
           child: child,
         ),
-      ),
     );
   }
 }
@@ -417,140 +423,114 @@ class _ModernFilterChip extends StatelessWidget {
 class _ModernInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(25),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.3),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.15),
-                blurRadius: 25,
-                offset: const Offset(0, 10),
-              ),
-            ],
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.fromARGB(240, 255, 255, 255),
+            Color.fromARGB(240, 248, 250, 252),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(25),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 25,
+            offset: const Offset(0, 10),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Megamas Mall',
-                style: GoogleFonts.poppins(
+        ],
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Megamas Mall',
+              style: GoogleFonts.poppins(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF283D4A),
+                  color: const Color(0xFF283D4A))),
+          const SizedBox(height: 6),
+          Row(
+            children: [
+              const Icon(Icons.location_on, size: 16, color: Colors.black54),
+              const SizedBox(width: 4),
+              Text('0.8 km',
+                  style: GoogleFonts.poppins(
+                      fontSize: 14, color: Colors.black54)),
+              const SizedBox(width: 12),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              ),
-              const SizedBox(height: 6),
-              Row(
-                children: [
-                  const Icon(
-                    Icons.location_on,
-                    size: 16,
-                    color: Colors.black54,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '0.8 km',
+                child: Text('Buka',
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      'Buka',
-                      style: GoogleFonts.poppins(
                         fontSize: 12,
                         color: Colors.green,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Kapasitas 12',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
+                        fontWeight: FontWeight.w500)),
               ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF74C0E3), Color(0xFF1E88E5)],
-                        ),
+              const SizedBox(width: 12),
+              Text('Kapasitas 12',
+                  style: GoogleFonts.poppins(
+                      fontSize: 14, color: Colors.black54)),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF74C0E3), Color(0xFF1E88E5)],
+                    ),
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                        ),
-                        child: Text(
-                          'Navigasi',
-                          style: GoogleFonts.poppins(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text('Navigasi',
+                        style: GoogleFonts.poppins(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+                            color: Colors.white)),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {},
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFF1E88E5)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                      ),
-                      child: Text(
-                        'Detail',
-                        style: GoogleFonts.poppins(
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {},
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Color(0xFF1E88E5)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: Text('Detail',
+                      style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1E88E5),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                          color: const Color(0xFF1E88E5))),
+                ),
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

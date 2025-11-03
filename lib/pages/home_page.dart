@@ -252,19 +252,42 @@ class ModernHome extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        _badge('Terisi', occupiedCount,
-                            const [Color(0xFF6EC1E4), Color(0xFF64B5F6)]),
-                        _badge('Kosong', emptyCount,
-                            const [Color(0xFF81C784), Color(0xFF66BB6A)]),
-                        _badge('Total', slots.length,
-                            const [Color(0xFF90A4AE), Color(0xFF78909C)]),
-                      ],
+                    _BigStatusCard(
+                      occupied: occupiedCount,
+                      empty: emptyCount,
+                      total: slots.length,
+                      onHistory: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const PaymentHistoryPage()),
+                      ),
+                      onMap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const MapPage()),
+                      ),
                     ),
                     const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _QuickActionCard(
+                            icon: Icons.receipt_long,
+                            label: 'Riwayat',
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const PaymentHistoryPage()),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _QuickActionCard(
+                            icon: Icons.person,
+                            label: 'Profil',
+                            onTap: () => Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const ProfilePage()),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
                     Expanded(
                       child: GridView.builder(
                         physics: const BouncingScrollPhysics(),
@@ -468,7 +491,7 @@ class _GridSlotTile extends StatelessWidget {
     final isOccupied = slot.occupied;
     const accent = Color(0xFF26A69A);
     final numberStyle = GoogleFonts.poppins(
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: FontWeight.w700,
       color: isOccupied ? accent : const Color(0xFF283D4A),
     );
@@ -509,8 +532,33 @@ class _GridSlotTile extends StatelessWidget {
                   width: 1,
                 ),
               ),
-              alignment: Alignment.center,
-              child: Text('${slot.id}', style: numberStyle),
+              child: Stack(
+                children: [
+                  // Status dot di pojok kanan atas
+                  Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: isOccupied
+                            ? accent
+                            : const Color(0xFF9E9E9E),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Nomor slot
+                  Center(child: Text('${slot.id}', style: numberStyle)),
+                ],
+              ),
             ),
           ),
         ),
@@ -757,6 +805,151 @@ class _HoverableCardState extends State<_HoverableCard> {
         duration: const Duration(milliseconds: 160),
         curve: Curves.easeOut,
         child: widget.child,
+      ),
+    );
+  }
+}
+
+class _BigStatusCard extends StatelessWidget {
+  final int occupied;
+  final int empty;
+  final int total;
+  final VoidCallback onHistory;
+  final VoidCallback onMap;
+  const _BigStatusCard({
+    required this.occupied,
+    required this.empty,
+    required this.total,
+    required this.onHistory,
+    required this.onMap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF00695C), Color(0xFF26A69A)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Status Parkir',
+              style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white)),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              _statusItem('Terisi', occupied),
+              const SizedBox(width: 12),
+              _statusItem('Kosong', empty),
+              const SizedBox(width: 12),
+              _statusItem('Total', total),
+              const Spacer(),
+              _pillButton(Icons.search, 'Cari Slot', onMap),
+              const SizedBox(width: 8),
+              _pillButton(Icons.receipt_long, 'Riwayat', onHistory),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _statusItem(String label, int value) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: GoogleFonts.poppins(
+                  fontSize: 11, color: Colors.white.withOpacity(0.9))),
+          Text('$value',
+              style: GoogleFonts.poppins(
+                  fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
+        ],
+      ),
+    );
+  }
+
+  Widget _pillButton(IconData icon, String text, VoidCallback onTap) {
+    return TextButton.icon(
+      style: TextButton.styleFrom(
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        backgroundColor: Colors.white.withOpacity(0.12),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+      onPressed: onTap,
+      icon: Icon(icon, size: 16),
+      label: Text(text, style: const TextStyle(fontSize: 12)),
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  const _QuickActionCard({required this.icon, required this.label, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return _HoverableCard(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(18),
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+              border: Border.all(color: Colors.black12),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 18,
+                  backgroundColor: const Color(0xFFE3F2FD),
+                  child: Icon(icon, color: const Color(0xFF1E88E5)),
+                ),
+                const SizedBox(width: 12),
+                Text(label,
+                    style: GoogleFonts.poppins(
+                        fontSize: 14, fontWeight: FontWeight.w600)),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
