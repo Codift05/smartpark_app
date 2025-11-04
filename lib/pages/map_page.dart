@@ -16,12 +16,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   final MapController mapController = MapController();
   late AnimationController _markerController;
   late AnimationController _cardController;
+  late AnimationController _loadingController;
   late Animation<double> _markerAnimation;
   late Animation<Offset> _cardAnimation;
 
   double zoom = 17;
   final Set<String> _filters = {};
   bool _showInfoCard = false;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -34,6 +36,10 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
+    _loadingController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat();
 
     _markerAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _markerController, curve: Curves.elasticOut),
@@ -45,13 +51,20 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     ).animate(
         CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic));
 
-    _markerController.forward();
+    // Simulate loading map tiles
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        _markerController.forward();
+      }
+    });
   }
 
   @override
   void dispose() {
     _markerController.dispose();
     _cardController.dispose();
+    _loadingController.dispose();
     super.dispose();
   }
 
@@ -136,9 +149,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                 ],
               ),
             ],
-          ),
-
-          // Modern Search Bar
+          ), // Modern Search Bar
           Positioned(
             left: 16,
             right: 16,
@@ -262,6 +273,14 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
               child: SlideTransition(
                 position: _cardAnimation,
                 child: _ModernInfoCard(),
+              ),
+            ),
+
+          // Modern Loading Overlay
+          if (_isLoading)
+            Positioned.fill(
+              child: _ModernLoadingOverlay(
+                animationController: _loadingController,
               ),
             ),
         ],
@@ -588,6 +607,209 @@ class _ModernFABState extends State<_ModernFAB>
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+// Modern Loading Overlay with shimmer effect
+class _ModernLoadingOverlay extends StatelessWidget {
+  final AnimationController animationController;
+
+  const _ModernLoadingOverlay({
+    required this.animationController,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: const Color(0xFFF8F9FA),
+      child: Stack(
+        children: [
+          // Background shimmer effect
+          AnimatedBuilder(
+            animation: animationController,
+            builder: (context, child) {
+              return Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      const Color(0xFFF8F9FA),
+                      const Color(0xFFE3F2FD).withValues(
+                        alpha: 0.3 + (animationController.value * 0.3),
+                      ),
+                      const Color(0xFFF8F9FA),
+                    ],
+                    stops: [
+                      animationController.value - 0.3,
+                      animationController.value,
+                      animationController.value + 0.3,
+                    ].map((e) => e.clamp(0.0, 1.0)).toList(),
+                  ),
+                ),
+              );
+            },
+          ),
+
+          // Loading content
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Animated map icon with gradient
+                AnimatedBuilder(
+                  animation: animationController,
+                  builder: (context, child) {
+                    return Transform.scale(
+                      scale: 1.0 +
+                          (0.1 *
+                              (1 -
+                                  (animationController.value - 0.5).abs() * 2)),
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color.lerp(
+                                const Color(0xFF74C0E3),
+                                const Color(0xFF1E88E5),
+                                animationController.value,
+                              )!,
+                              Color.lerp(
+                                const Color(0xFF1E88E5),
+                                const Color(0xFF74C0E3),
+                                animationController.value,
+                              )!,
+                            ],
+                          ),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFF1E88E5).withValues(
+                                alpha: 0.3 + (animationController.value * 0.2),
+                              ),
+                              blurRadius: 20 + (animationController.value * 10),
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.map_rounded,
+                          size: 50,
+                          color: Colors.white,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 32),
+
+                // Loading text with fade animation
+                AnimatedBuilder(
+                  animation: animationController,
+                  builder: (context, child) {
+                    return Opacity(
+                      opacity: 0.6 +
+                          (0.4 *
+                              (1 -
+                                  (animationController.value - 0.5).abs() * 2)),
+                      child: Text(
+                        'Memuat Peta...',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF1E88E5),
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                // Animated dots
+                AnimatedBuilder(
+                  animation: animationController,
+                  builder: (context, child) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(3, (index) {
+                        final delay = index * 0.2;
+                        final dotValue =
+                            ((animationController.value + delay) % 1.0);
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Color.lerp(
+                              const Color(0xFF1E88E5).withValues(alpha: 0.3),
+                              const Color(0xFF1E88E5),
+                              dotValue,
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                        );
+                      }),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 40),
+
+                // Shimmer loading bar
+                AnimatedBuilder(
+                  animation: animationController,
+                  builder: (context, child) {
+                    return Container(
+                      width: 200,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(2),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 4,
+                          ),
+                        ],
+                      ),
+                      child: FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor: 0.3 + (animationController.value * 0.7),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2),
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFF74C0E3),
+                                Color(0xFF1E88E5),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF1E88E5)
+                                    .withValues(alpha: 0.4),
+                                blurRadius: 8,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

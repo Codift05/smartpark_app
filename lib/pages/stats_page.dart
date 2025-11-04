@@ -13,32 +13,12 @@ class StatsPage extends StatefulWidget {
   State<StatsPage> createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage>
-    with SingleTickerProviderStateMixin {
-  // Modern theme colors - Gojek/Traveloka inspired
-  static const Color _primaryGreen = Color(0xFF00AA13);
-  static const Color _secondaryBlue = Color(0xFF0081A0);
-  static const Color _accentOrange = Color(0xFFFF6F00);
+class _StatsPageState extends State<StatsPage> {
+  // Clean modern theme colors - minimal palette
   static const Color _bgLight = Color(0xFFF8F9FA);
   static const Color _cardWhite = Color(0xFFFFFFFF);
 
-  late final AnimationController _pulseCtrl;
   DateTime? _lastPredTs;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1400),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _pulseCtrl.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +94,7 @@ class _StatsPageState extends State<StatsPage>
                                   icon: Icons.local_parking_rounded,
                                   label: 'Tersedia',
                                   value: available.toString(),
-                                  color: _primaryGreen,
-                                  gradient: const [
-                                    Color(0xFF00AA13),
-                                    Color(0xFF00C853)
-                                  ],
+                                  iconColor: const Color(0xFF00C9A7),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -127,11 +103,7 @@ class _StatsPageState extends State<StatsPage>
                                   icon: Icons.directions_car_rounded,
                                   label: 'Terisi',
                                   value: occupied.toString(),
-                                  color: _secondaryBlue,
-                                  gradient: const [
-                                    Color(0xFF0081A0),
-                                    Color(0xFF00ACC1)
-                                  ],
+                                  iconColor: const Color(0xFF6B7280),
                                 ),
                               ),
                             ],
@@ -144,11 +116,7 @@ class _StatsPageState extends State<StatsPage>
                                   icon: Icons.analytics_rounded,
                                   label: 'Tingkat Hunian',
                                   value: '$usage%',
-                                  color: _accentOrange,
-                                  gradient: const [
-                                    Color(0xFFFF6F00),
-                                    Color(0xFFFF8F00)
-                                  ],
+                                  iconColor: const Color(0xFF00C9A7),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -157,11 +125,7 @@ class _StatsPageState extends State<StatsPage>
                                   icon: Icons.garage_rounded,
                                   label: 'Total Slot',
                                   value: total.toString(),
-                                  color: const Color(0xFF7B1FA2),
-                                  gradient: const [
-                                    Color(0xFF7B1FA2),
-                                    Color(0xFF9C27B0)
-                                  ],
+                                  iconColor: const Color(0xFF6B7280),
                                 ),
                               ),
                             ],
@@ -198,25 +162,13 @@ class _StatsPageState extends State<StatsPage>
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF667EEA),
-                                        Color(0xFF764BA2)
-                                      ],
-                                    ),
+                                    color: const Color(0xFF00C9A7)
+                                        .withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(14),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFF667EEA)
-                                            .withValues(alpha: 0.3),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
                                   ),
                                   child: const Icon(
                                     Icons.insights_rounded,
-                                    color: Colors.white,
+                                    color: Color(0xFF00C9A7),
                                     size: 24,
                                   ),
                                 ),
@@ -240,8 +192,8 @@ class _StatsPageState extends State<StatsPage>
                                           Container(
                                             width: 6,
                                             height: 6,
-                                            decoration: BoxDecoration(
-                                              color: _primaryGreen,
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xFF00C9A7),
                                               shape: BoxShape.circle,
                                             ),
                                           ),
@@ -250,7 +202,7 @@ class _StatsPageState extends State<StatsPage>
                                             'Live • ${pred.timestamp.hour.toString().padLeft(2, '0')}:${pred.timestamp.minute.toString().padLeft(2, '0')}',
                                             style: GoogleFonts.poppins(
                                               fontSize: 12,
-                                              color: Colors.black45,
+                                              color: const Color(0xFF6B7280),
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
@@ -270,30 +222,21 @@ class _StatsPageState extends State<StatsPage>
                               label: 'Rendah',
                               value: pred.low,
                               icon: Icons.arrow_downward_rounded,
-                              colors: const [
-                                Color(0xFF00C853),
-                                Color(0xFF64DD17)
-                              ],
+                              color: const Color(0xFF00C9A7),
                             ),
                             const SizedBox(height: 14),
                             _ModernProgressBar(
                               label: 'Sedang',
                               value: pred.medium,
                               icon: Icons.remove_rounded,
-                              colors: const [
-                                Color(0xFFFF8F00),
-                                Color(0xFFFFAB00)
-                              ],
+                              color: const Color(0xFF6B7280),
                             ),
                             const SizedBox(height: 14),
                             _ModernProgressBar(
                               label: 'Tinggi',
                               value: pred.high,
                               icon: Icons.arrow_upward_rounded,
-                              colors: const [
-                                Color(0xFFE53935),
-                                Color(0xFFFF6F00)
-                              ],
+                              color: const Color(0xFF1A1A1A),
                             ),
                           ],
                         ),
@@ -326,25 +269,13 @@ class _StatsPageState extends State<StatsPage>
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFFf093fb),
-                                        Color(0xFFf5576c)
-                                      ],
-                                    ),
+                                    color: const Color(0xFF00C9A7)
+                                        .withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(14),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFFf5576c)
-                                            .withValues(alpha: 0.3),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
                                   ),
                                   child: const Icon(
                                     Icons.timeline_rounded,
-                                    color: Colors.white,
+                                    color: Color(0xFF00C9A7),
                                     size: 24,
                                   ),
                                 ),
@@ -365,21 +296,21 @@ class _StatsPageState extends State<StatsPage>
                               icon: Icons.groups_rounded,
                               label: 'Estimasi Pengunjung',
                               value: '$estVisit kendaraan',
-                              color: const Color(0xFF667EEA),
+                              color: const Color(0xFF00C9A7),
                             ),
                             const SizedBox(height: 12),
                             _ActivityItem(
                               icon: Icons.schedule_rounded,
                               label: 'Waktu Puncak',
                               value: '12:00 - 13:00 WIB',
-                              color: const Color(0xFFFF6F00),
+                              color: const Color(0xFF6B7280),
                             ),
                             const SizedBox(height: 12),
                             _ActivityItem(
                               icon: Icons.trending_up_rounded,
                               label: 'Trend Hunian',
                               value: usage > 50 ? 'Meningkat' : 'Stabil',
-                              color: const Color(0xFF00C853),
+                              color: const Color(0xFF00C9A7),
                             ),
                           ],
                         ),
@@ -400,20 +331,18 @@ class _StatsPageState extends State<StatsPage>
 
 // ============ Modern UI Components ============
 
-// Quick Stat Card - Gojek/Traveloka style
+// Quick Stat Card - Clean minimal style
 class _QuickStatCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  final Color color;
-  final List<Color> gradient;
+  final Color iconColor;
 
   const _QuickStatCard({
     required this.icon,
     required this.label,
     required this.value,
-    required this.color,
-    required this.gradient,
+    required this.iconColor,
   });
 
   @override
@@ -423,11 +352,15 @@ class _QuickStatCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFE5E7EB),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -438,17 +371,10 @@ class _QuickStatCard extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: gradient),
+              color: iconColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: color.withValues(alpha: 0.25),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
-            child: Icon(icon, color: Colors.white, size: 22),
+            child: Icon(icon, color: iconColor, size: 22),
           ),
           const SizedBox(height: 12),
           Text(
@@ -464,7 +390,7 @@ class _QuickStatCard extends StatelessWidget {
             label,
             style: GoogleFonts.poppins(
               fontSize: 12,
-              color: Colors.black54,
+              color: const Color(0xFF6B7280),
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -500,44 +426,41 @@ class _ModernCard extends StatelessWidget {
   }
 }
 
-// Status Badge
+// Status Badge - Clean style
 class _StatusBadge extends StatelessWidget {
   final String level;
 
   const _StatusBadge({required this.level});
 
-  List<Color> _getColors() {
+  Color _getColor() {
     switch (level) {
       case 'Tinggi':
-        return const [Color(0xFFE53935), Color(0xFFFF6F00)];
+        return const Color(0xFF1A1A1A);
       case 'Sedang':
-        return const [Color(0xFFFF8F00), Color(0xFFFFAB00)];
+        return const Color(0xFF6B7280);
       default:
-        return const [Color(0xFF00C853), Color(0xFF64DD17)];
+        return const Color(0xFF00C9A7);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final colors = _getColors();
+    final color = _getColor();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: colors),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: colors[0].withValues(alpha: 0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+          width: 1,
+        ),
       ),
       child: Text(
         level,
         style: GoogleFonts.poppins(
-          color: Colors.white,
-          fontWeight: FontWeight.w700,
+          color: color,
+          fontWeight: FontWeight.w600,
           fontSize: 12,
         ),
       ),
@@ -545,18 +468,18 @@ class _StatusBadge extends StatelessWidget {
   }
 }
 
-// Modern Progress Bar
+// Modern Progress Bar - Clean minimal style
 class _ModernProgressBar extends StatelessWidget {
   final String label;
   final double value;
   final IconData icon;
-  final List<Color> colors;
+  final Color color;
 
   const _ModernProgressBar({
     required this.label,
     required this.value,
     required this.icon,
-    required this.colors,
+    required this.color,
   });
 
   @override
@@ -571,10 +494,10 @@ class _ModernProgressBar extends StatelessWidget {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                color: colors[0].withValues(alpha: 0.15),
+                color: color.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, size: 16, color: colors[0]),
+              child: Icon(icon, size: 16, color: color),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -592,7 +515,7 @@ class _ModernProgressBar extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
-                color: colors[0],
+                color: color,
               ),
             ),
           ],
@@ -605,7 +528,7 @@ class _ModernProgressBar extends StatelessWidget {
             child: Stack(
               children: [
                 Container(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: const Color(0xFFF3F4F6),
                 ),
                 TweenAnimationBuilder<double>(
                   duration: const Duration(milliseconds: 800),
@@ -616,7 +539,7 @@ class _ModernProgressBar extends StatelessWidget {
                       widthFactor: v,
                       child: Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: colors),
+                          color: color,
                         ),
                       ),
                     );
@@ -631,7 +554,7 @@ class _ModernProgressBar extends StatelessWidget {
   }
 }
 
-// Activity Item
+// Activity Item - Clean minimal style
 class _ActivityItem extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -650,10 +573,10 @@ class _ActivityItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
+        color: const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-          color: color.withValues(alpha: 0.2),
+          color: const Color(0xFFE5E7EB),
           width: 1,
         ),
       ),
@@ -663,7 +586,7 @@ class _ActivityItem extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.15),
+              color: color.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -677,7 +600,7 @@ class _ActivityItem extends StatelessWidget {
                   label,
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: Colors.black54,
+                    color: const Color(0xFF6B7280),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -694,7 +617,7 @@ class _ActivityItem extends StatelessWidget {
             ),
           ),
           Icon(Icons.arrow_forward_ios_rounded,
-              size: 16, color: Colors.black26),
+              size: 16, color: const Color(0xFFD1D5DB)),
         ],
       ),
     );
