@@ -15,17 +15,15 @@ class StatsPage extends StatefulWidget {
 
 class _StatsPageState extends State<StatsPage>
     with SingleTickerProviderStateMixin {
-  // Theme & accents
-  static const Color _softPage = Color(0xFFEAF3FF);
-  static const Color _white = Colors.white;
-  static const Color _accentBlue = Color(0xFF3A8DFF);
-  static const Color _gradStart = Color(0xFF4FC3F7);
-  static const Color _gradEnd = Color(0xFF1976D2);
+  // Modern theme colors - Gojek/Traveloka inspired
+  static const Color _primaryGreen = Color(0xFF00AA13);
+  static const Color _secondaryBlue = Color(0xFF0081A0);
+  static const Color _accentOrange = Color(0xFFFF6F00);
+  static const Color _bgLight = Color(0xFFF8F9FA);
+  static const Color _cardWhite = Color(0xFFFFFFFF);
 
   late final AnimationController _pulseCtrl;
-  double _scrollOffset = 0;
   DateTime? _lastPredTs;
-  bool _flashPred = false;
 
   @override
   void initState() {
@@ -44,379 +42,522 @@ class _StatsPageState extends State<StatsPage>
 
   @override
   Widget build(BuildContext context) {
-    final titleStyle = GoogleFonts.poppins(
-      fontSize: 20,
-      fontWeight: FontWeight.w700,
-      color: const Color(0xFF0F172A),
-    );
-    final subtitleStyle = GoogleFonts.poppins(
-      fontSize: 13,
-      fontWeight: FontWeight.w500,
-      color: Colors.black54,
-    );
-
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            _softPage,
-            Color(0xFFF7FAFF),
-          ],
-        ),
-      ),
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (n) {
-          if (n.metrics.axis == Axis.vertical) {
-            setState(() => _scrollOffset = n.metrics.pixels);
-          }
-          return false;
-        },
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 24),
-          children: [
-            // Prediksi Kepadatan
-            StreamBuilder<Prediction>(
-              stream: widget.service.predictionStream,
-              builder: (context, snap) {
-                final pred = snap.data;
-                if (pred == null) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                // Trigger subtle flash when new data arrives
-                if (_lastPredTs != pred.timestamp) {
-                  _lastPredTs = pred.timestamp;
-                  Future.microtask(() {
-                    if (mounted) {
-                      setState(() => _flashPred = true);
-                      Future.delayed(const Duration(milliseconds: 700), () {
-                        if (mounted) setState(() => _flashPred = false);
-                      });
-                    }
-                  });
-                }
-
-                final badgeColors = _levelGradient(pred.level);
-                return Transform.translate(
-                  offset: Offset(0, -_scrollOffset * 0.03),
-                  child: _InteractiveScale(
-                    child: Stack(
-                      children: [
-                        _GlassCard(
-                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient: const LinearGradient(
-                                        colors: [_gradStart, _gradEnd],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.08),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 6),
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Icon(Icons.insights,
-                                        color: Colors.white),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Prediksi Kepadatan',
-                                            style: titleStyle),
-                                        const SizedBox(height: 4),
-                                        Row(
-                                          children: [
-                                            const Icon(Icons.schedule,
-                                                size: 16,
-                                                color: Colors.black45),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              '(${pred.timestamp.hour.toString().padLeft(2, '0')}:${pred.timestamp.minute.toString().padLeft(2, '0')}) • realtime',
-                                              style: subtitleStyle,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  _GradientBadge(
-                                      text: pred.level, colors: badgeColors),
-                                ],
-                              ),
-                              const SizedBox(height: 14),
-                              _PulseIcon(controller: _pulseCtrl),
-                              const SizedBox(height: 14),
-                              _GradientProgressBar(
-                                  label: 'Rendah',
-                                  value: pred.low,
-                                  start: Colors.greenAccent,
-                                  end: Colors.green),
-                              const SizedBox(height: 10),
-                              _GradientProgressBar(
-                                  label: 'Sedang',
-                                  value: pred.medium,
-                                  start: Colors.orangeAccent,
-                                  end: Colors.deepOrange),
-                              const SizedBox(height: 10),
-                              _GradientProgressBar(
-                                  label: 'Tinggi',
-                                  value: pred.high,
-                                  start: Colors.redAccent,
-                                  end: Colors.red),
-                            ],
-                          ),
-                        ),
-                        _HighlightFlash(active: _flashPred, color: _accentBlue),
-                      ],
+    return Scaffold(
+      backgroundColor: _bgLight,
+      body: SafeArea(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // Modern Header
+            SliverToBoxAdapter(
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                decoration: BoxDecoration(
+                  color: _cardWhite,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
-                  ),
-                );
-              },
-            ),
-
-            const SizedBox(height: 14),
-
-            // Statistik Harian
-            StreamBuilder<List<ParkingSlot>>(
-              stream: widget.service.slotsStream,
-              builder: (context, snap) {
-                final slots = snap.data ?? const <ParkingSlot>[];
-                final occ = slots.where((s) => s.occupied).length;
-                final total = slots.length;
-                final usage = total == 0 ? 0 : ((occ / total) * 100).round();
-                final estVisit = (usage * 3) + 10;
-
-                return Transform.translate(
-                  offset: Offset(0, -_scrollOffset * 0.015),
-                  child: _InteractiveScale(
-                    child: _GlassCard(
-                      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFFE3F2FD),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.06),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(Icons.bar_chart,
-                                    color: _accentBlue),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Statistik Harian', style: titleStyle),
-                                    const SizedBox(height: 4),
-                                    Text('Ringkasan penggunaan area parkir',
-                                        style: subtitleStyle),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 16),
-                          Wrap(
-                            spacing: 12,
-                            runSpacing: 12,
-                            children: [
-                              _InfoRow(
-                                  icon: Icons.directions_car,
-                                  label: 'Terisi',
-                                  value: '$occ / $total'),
-                              _InfoRow(
-                                  icon: Icons.speed,
-                                  label: 'Usage',
-                                  value: '$usage%'),
-                              _InfoRow(
-                                  icon: Icons.groups_rounded,
-                                  label: 'Estimasi kunjungan',
-                                  value: '$estVisit'),
-                              const _InfoRow(
-                                  icon: Icons.access_time,
-                                  label: 'Puncak',
-                                  value: '12:00 - 13:00'),
-                            ],
-                          ),
-                        ],
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Statistik',
+                      style: GoogleFonts.poppins(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF1A1A1A),
+                        letterSpacing: -0.5,
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Gradient colors for badges based on level
-  List<Color> _levelGradient(String level) {
-    switch (level) {
-      case 'Tinggi':
-        return const [Color(0xFFFF6B6B), Color(0xFFFF8E53)]; // red → orange
-      case 'Sedang':
-        return const [Color(0xFFFFC371), Color(0xFFFFA24C)]; // soft orange
-      default:
-        return const [Color(0xFF84FAB0), Color(0xFF2BD2FF)]; // greenish → cyan
-    }
-  }
-}
-
-class _GlassCard extends StatelessWidget {
-  final Widget child;
-  final EdgeInsetsGeometry padding;
-  const _GlassCard(
-      {required this.child, this.padding = const EdgeInsets.all(16)});
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.6),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(0, 10)),
-          ],
-          border: Border.all(color: Colors.white.withOpacity(0.5)),
-        ),
-        child: Stack(
-          children: [
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 12),
-              child: const SizedBox.shrink(),
-            ),
-            Padding(padding: padding, child: child),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _GradientBadge extends StatelessWidget {
-  final String text;
-  final List<Color> colors;
-  const _GradientBadge({required this.text, required this.colors});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-            colors: colors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.08),
-              blurRadius: 10,
-              offset: const Offset(0, 4)),
-        ],
-      ),
-      child: Text(
-        text,
-        style: GoogleFonts.poppins(
-            color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12),
-      ),
-    );
-  }
-}
-
-class _PulseIcon extends StatelessWidget {
-  final AnimationController controller;
-  const _PulseIcon({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: AnimatedBuilder(
-        animation: controller,
-        builder: (_, __) {
-          final scale = 1 + (controller.value * 0.08);
-          final opacity = 0.6 + (controller.value * 0.4);
-          return Transform.scale(
-            scale: scale,
-            child: Opacity(
-              opacity: opacity,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF1E88E5).withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.trending_up,
-                        color: Color(0xFF1E88E5), size: 18),
-                    const SizedBox(width: 6),
-                    Text('Aktif',
-                        style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF1E88E5))),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Analisis real-time area parkir',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ],
                 ),
               ),
             ),
-          );
-        },
+
+            // Content
+            SliverPadding(
+              padding: const EdgeInsets.all(16),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Quick Stats Cards
+                  StreamBuilder<List<ParkingSlot>>(
+                    stream: widget.service.slotsStream,
+                    builder: (context, snap) {
+                      final slots = snap.data ?? const <ParkingSlot>[];
+                      final occupied = slots.where((s) => s.occupied).length;
+                      final total = slots.length;
+                      final available = total - occupied;
+                      final usage =
+                          total == 0 ? 0 : ((occupied / total) * 100).round();
+
+                      return Column(
+                        children: [
+                          // Quick Stats Row
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _QuickStatCard(
+                                  icon: Icons.local_parking_rounded,
+                                  label: 'Tersedia',
+                                  value: available.toString(),
+                                  color: _primaryGreen,
+                                  gradient: const [
+                                    Color(0xFF00AA13),
+                                    Color(0xFF00C853)
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _QuickStatCard(
+                                  icon: Icons.directions_car_rounded,
+                                  label: 'Terisi',
+                                  value: occupied.toString(),
+                                  color: _secondaryBlue,
+                                  gradient: const [
+                                    Color(0xFF0081A0),
+                                    Color(0xFF00ACC1)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _QuickStatCard(
+                                  icon: Icons.analytics_rounded,
+                                  label: 'Tingkat Hunian',
+                                  value: '$usage%',
+                                  color: _accentOrange,
+                                  gradient: const [
+                                    Color(0xFFFF6F00),
+                                    Color(0xFFFF8F00)
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _QuickStatCard(
+                                  icon: Icons.garage_rounded,
+                                  label: 'Total Slot',
+                                  value: total.toString(),
+                                  color: const Color(0xFF7B1FA2),
+                                  gradient: const [
+                                    Color(0xFF7B1FA2),
+                                    Color(0xFF9C27B0)
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Prediksi Kepadatan Card
+                  StreamBuilder<Prediction>(
+                    stream: widget.service.predictionStream,
+                    builder: (context, snap) {
+                      final pred = snap.data;
+                      if (pred == null) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      // Update timestamp
+                      if (_lastPredTs != pred.timestamp) {
+                        _lastPredTs = pred.timestamp;
+                      }
+
+                      return _ModernCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Header
+                            Row(
+                              children: [
+                                Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFF667EEA),
+                                        Color(0xFF764BA2)
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF667EEA)
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.insights_rounded,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Prediksi Kepadatan',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF1A1A1A),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Row(
+                                        children: [
+                                          Container(
+                                            width: 6,
+                                            height: 6,
+                                            decoration: BoxDecoration(
+                                              color: _primaryGreen,
+                                              shape: BoxShape.circle,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            'Live • ${pred.timestamp.hour.toString().padLeft(2, '0')}:${pred.timestamp.minute.toString().padLeft(2, '0')}',
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: Colors.black45,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                _StatusBadge(level: pred.level),
+                              ],
+                            ),
+
+                            const SizedBox(height: 20),
+
+                            // Progress Bars
+                            _ModernProgressBar(
+                              label: 'Rendah',
+                              value: pred.low,
+                              icon: Icons.arrow_downward_rounded,
+                              colors: const [
+                                Color(0xFF00C853),
+                                Color(0xFF64DD17)
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            _ModernProgressBar(
+                              label: 'Sedang',
+                              value: pred.medium,
+                              icon: Icons.remove_rounded,
+                              colors: const [
+                                Color(0xFFFF8F00),
+                                Color(0xFFFFAB00)
+                              ],
+                            ),
+                            const SizedBox(height: 14),
+                            _ModernProgressBar(
+                              label: 'Tinggi',
+                              value: pred.high,
+                              icon: Icons.arrow_upward_rounded,
+                              colors: const [
+                                Color(0xFFE53935),
+                                Color(0xFFFF6F00)
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // Activity Summary Card
+                  StreamBuilder<List<ParkingSlot>>(
+                    stream: widget.service.slotsStream,
+                    builder: (context, snap) {
+                      final slots = snap.data ?? const <ParkingSlot>[];
+                      final usage = slots.isEmpty
+                          ? 0
+                          : ((slots.where((s) => s.occupied).length /
+                                      slots.length) *
+                                  100)
+                              .round();
+                      final estVisit = (usage * 3) + 15;
+
+                      return _ModernCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [
+                                        Color(0xFFf093fb),
+                                        Color(0xFFf5576c)
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(14),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFFf5576c)
+                                            .withValues(alpha: 0.3),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.timeline_rounded,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Text(
+                                  'Aktivitas Hari Ini',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF1A1A1A),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            // Activity Items
+                            _ActivityItem(
+                              icon: Icons.groups_rounded,
+                              label: 'Estimasi Pengunjung',
+                              value: '$estVisit kendaraan',
+                              color: const Color(0xFF667EEA),
+                            ),
+                            const SizedBox(height: 12),
+                            _ActivityItem(
+                              icon: Icons.schedule_rounded,
+                              label: 'Waktu Puncak',
+                              value: '12:00 - 13:00 WIB',
+                              color: const Color(0xFFFF6F00),
+                            ),
+                            const SizedBox(height: 12),
+                            _ActivityItem(
+                              icon: Icons.trending_up_rounded,
+                              label: 'Trend Hunian',
+                              value: usage > 50 ? 'Meningkat' : 'Stabil',
+                              color: const Color(0xFF00C853),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+
+                  const SizedBox(height: 100), // Bottom padding for navbar
+                ]),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _GradientProgressBar extends StatelessWidget {
+// ============ Modern UI Components ============
+
+// Quick Stat Card - Gojek/Traveloka style
+class _QuickStatCard extends StatelessWidget {
+  final IconData icon;
   final String label;
-  final double value; // 0..1
-  final Color start;
-  final Color end;
-  const _GradientProgressBar(
-      {required this.label,
-      required this.value,
-      required this.start,
-      required this.end});
+  final String value;
+  final Color color;
+  final List<Color> gradient;
+
+  const _QuickStatCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: gradient),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.25),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Icon(icon, color: Colors.white, size: 22),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: GoogleFonts.poppins(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1A1A1A),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              fontSize: 12,
+              color: Colors.black54,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Modern Card Container
+class _ModernCard extends StatelessWidget {
+  final Widget child;
+
+  const _ModernCard({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+}
+
+// Status Badge
+class _StatusBadge extends StatelessWidget {
+  final String level;
+
+  const _StatusBadge({required this.level});
+
+  List<Color> _getColors() {
+    switch (level) {
+      case 'Tinggi':
+        return const [Color(0xFFE53935), Color(0xFFFF6F00)];
+      case 'Sedang':
+        return const [Color(0xFFFF8F00), Color(0xFFFFAB00)];
+      default:
+        return const [Color(0xFF00C853), Color(0xFF64DD17)];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = _getColors();
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: colors),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: colors[0].withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Text(
+        level,
+        style: GoogleFonts.poppins(
+          color: Colors.white,
+          fontWeight: FontWeight.w700,
+          fontSize: 12,
+        ),
+      ),
+    );
+  }
+}
+
+// Modern Progress Bar
+class _ModernProgressBar extends StatelessWidget {
+  final String label;
+  final double value;
+  final IconData icon;
+  final List<Color> colors;
+
+  const _ModernProgressBar({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.colors,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -425,60 +566,64 @@ class _GradientProgressBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label,
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: colors[0].withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, size: 16, color: colors[0]),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
                 style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87)),
-            Text('$percent%',
-                style: GoogleFonts.poppins(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black54)),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1A1A1A),
+                ),
+              ),
+            ),
+            Text(
+              '$percent%',
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: colors[0],
+              ),
+            ),
           ],
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 10),
         ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final width = constraints.maxWidth;
-              return Stack(
-                children: [
-                  Container(
-                    height: 12,
-                    width: width,
-                    decoration:
-                        BoxDecoration(color: Colors.black12.withOpacity(0.06)),
-                  ),
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 700),
-                    curve: Curves.easeOut,
-                    tween: Tween<double>(begin: 0, end: value),
-                    builder: (context, v, child) {
-                      return Container(
-                        height: 12,
-                        width: width * v,
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            height: 10,
+            child: Stack(
+              children: [
+                Container(
+                  color: Colors.black.withValues(alpha: 0.05),
+                ),
+                TweenAnimationBuilder<double>(
+                  duration: const Duration(milliseconds: 800),
+                  curve: Curves.easeOutCubic,
+                  tween: Tween(begin: 0, end: value),
+                  builder: (context, v, _) {
+                    return FractionallySizedBox(
+                      widthFactor: v,
+                      child: Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: [start, end],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight),
-                          boxShadow: [
-                            BoxShadow(
-                                color: end.withOpacity(0.25),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4))
-                          ],
+                          gradient: LinearGradient(colors: colors),
                         ),
-                      );
-                    },
-                  ),
-                ],
-              );
-            },
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -486,100 +631,71 @@ class _GradientProgressBar extends StatelessWidget {
   }
 }
 
-class _InfoRow extends StatelessWidget {
+// Activity Item
+class _ActivityItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  const _InfoRow(
-      {required this.icon, required this.label, required this.value});
+  final Color color;
+
+  const _ActivityItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.55),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.5)),
+        color: color.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: color.withValues(alpha: 0.2),
+          width: 1,
+        ),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 18, color: const Color(0xFF3A8DFF)),
-          const SizedBox(width: 8),
-          Text('$label: ',
-              style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black87)),
-          Text(value,
-              style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87)),
-        ],
-      ),
-    );
-  }
-}
-
-class _InteractiveScale extends StatefulWidget {
-  final Widget child;
-  const _InteractiveScale({required this.child});
-
-  @override
-  State<_InteractiveScale> createState() => _InteractiveScaleState();
-}
-
-class _InteractiveScaleState extends State<_InteractiveScale> {
-  double _scale = 1.0;
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _scale = 1.02),
-      onExit: (_) => setState(() => _scale = 1.0),
-      child: GestureDetector(
-        onTapDown: (_) => setState(() => _scale = 0.98),
-        onTapUp: (_) => setState(() => _scale = 1.02),
-        onTapCancel: () => setState(() => _scale = 1.0),
-        child: AnimatedScale(
-          duration: const Duration(milliseconds: 160),
-          scale: _scale,
-          curve: Curves.easeOut,
-          child: widget.child,
-        ),
-      ),
-    );
-  }
-}
-
-class _HighlightFlash extends StatelessWidget {
-  final bool active;
-  final Color color;
-  const _HighlightFlash({required this.active, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: AnimatedOpacity(
-        opacity: active ? 0.25 : 0.0,
-        duration: const Duration(milliseconds: 450),
-        curve: Curves.easeOut,
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                color.withOpacity(0.0),
-                color.withOpacity(0.15),
-                color.withOpacity(0.0)
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    fontSize: 12,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: GoogleFonts.poppins(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A1A1A),
+                  ),
+                ),
               ],
-              stops: const [0.0, 0.5, 1.0],
             ),
           ),
-        ),
+          Icon(Icons.arrow_forward_ios_rounded,
+              size: 16, color: Colors.black26),
+        ],
       ),
     );
   }

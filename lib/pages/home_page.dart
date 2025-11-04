@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
 import '../models/slot.dart';
 import '../services/mock_parking_service.dart';
 import '../services/user_service.dart';
@@ -71,8 +70,9 @@ class _HomePageState extends State<HomePage> {
         switchInCurve: Curves.easeOutCubic,
         switchOutCurve: Curves.easeOutCubic,
         transitionBuilder: (child, animation) {
-          final offsetAnim = Tween<Offset>(begin: const Offset(0, 0.02), end: Offset.zero)
-              .animate(animation);
+          final offsetAnim =
+              Tween<Offset>(begin: const Offset(0, 0.02), end: Offset.zero)
+                  .animate(animation);
           final fadeAnim = animation;
           return FadeTransition(
             opacity: fadeAnim,
@@ -148,29 +148,102 @@ class ModernHome extends StatelessWidget {
               if (!snap.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-              final slots = snap.data!;
+              final slots = snap.data as List<ParkingSlot>;
               final occupiedCount = slots.where((s) => s.occupied).length;
               final emptyCount = slots.length - occupiedCount;
               return Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12), // Dikurangi dari 16 ke 12
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          'Home',
-                          style: GoogleFonts.poppins(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400,
-                            color: const Color.fromARGB(255, 0, 57, 50),
-                          ),
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF00695C),
+                                    Color(0xFF26A69A)
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: const Icon(Icons.local_parking_rounded,
+                                  color: Colors.white, size: 24),
+                            ),
+                            const SizedBox(width: 12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'smartpark',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF00695C),
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                                StreamBuilder<User?>(
+                                  stream:
+                                      FirebaseAuth.instance.authStateChanges(),
+                                  builder: (context, snapshot) {
+                                    final displayName = snapshot
+                                            .data?.displayName ??
+                                        snapshot.data?.email?.split('@')[0] ??
+                                        'User';
+                                    return Row(
+                                      children: [
+                                        Text(
+                                          'Halo, ',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 13,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                        Text(
+                                          displayName,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFF00695C),
+                                          ),
+                                        ),
+                                        const Text(' 👋'),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                         Row(
                           children: [
-                            const Icon(Icons.notifications_none,
-                                color: Color.fromARGB(255, 0, 60, 57)),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: IconButton(
+                                icon: const Icon(Icons.notifications_none,
+                                    color: Color(0xFF00695C)),
+                                onPressed: () {},
+                              ),
+                            ),
                             const SizedBox(width: 8),
                             PopupMenuButton<String>(
                               itemBuilder: (context) => const [
@@ -183,14 +256,16 @@ class ModernHome extends StatelessWidget {
                                     value: 'assistant',
                                     child: Text('Asisten AI')),
                                 PopupMenuItem(
-                                    value: 'demo_pay', child: Text('Demo Pembayaran')),
+                                    value: 'demo_pay',
+                                    child: Text('Demo Pembayaran')),
                               ],
                               onSelected: (v) async {
                                 switch (v) {
                                   case 'history':
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (_) => const PaymentHistoryPage(),
+                                        builder: (_) =>
+                                            const PaymentHistoryPage(),
                                       ),
                                     );
                                     break;
@@ -210,28 +285,43 @@ class ModernHome extends StatelessWidget {
                                     break;
                                   case 'demo_pay':
                                     try {
-                                      final uid = FirebaseAuth.instance.currentUser?.uid;
+                                      final uid = FirebaseAuth
+                                          .instance.currentUser?.uid;
                                       if (uid == null) {
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Harap login terlebih dahulu')),
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'Harap login terlebih dahulu')),
                                         );
                                         break;
                                       }
-                                      final payment = PaymentService(firestore: FirebaseFirestore.instance);
-                                      final history = await payment.createPayment(
+                                      final payment = PaymentService(
+                                          firestore:
+                                              FirebaseFirestore.instance);
+                                      final history =
+                                          await payment.createPayment(
                                         userId: uid,
                                         slotId: 'DEMO',
                                         amount: 5000,
                                       );
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Transaksi dibuat: ${history.id}')),
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Transaksi dibuat: ${history.id}')),
                                       );
                                       Navigator.of(context).push(
-                                        MaterialPageRoute(builder: (_) => const PaymentHistoryPage()),
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                const PaymentHistoryPage()),
                                       );
                                     } catch (e) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text('Gagal demo pembayaran: $e')),
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Gagal demo pembayaran: $e')),
                                       );
                                     }
                                     break;
@@ -242,28 +332,20 @@ class ModernHome extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Area Parkir',
-                      style: GoogleFonts.poppins(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                        color: const Color.fromARGB(255, 0, 43, 39),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 18), // Dikurangi dari 24 ke 18
                     _BigStatusCard(
                       occupied: occupiedCount,
                       empty: emptyCount,
                       total: slots.length,
                       onHistory: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const PaymentHistoryPage()),
+                        MaterialPageRoute(
+                            builder: (_) => const PaymentHistoryPage()),
                       ),
                       onMap: () => Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => const MapPage()),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12), // Dikurangi dari 16 ke 12
                     Row(
                       children: [
                         Expanded(
@@ -271,7 +353,8 @@ class ModernHome extends StatelessWidget {
                             icon: Icons.receipt_long,
                             label: 'Riwayat',
                             onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const PaymentHistoryPage()),
+                              MaterialPageRoute(
+                                  builder: (_) => const PaymentHistoryPage()),
                             ),
                           ),
                         ),
@@ -281,17 +364,19 @@ class ModernHome extends StatelessWidget {
                             icon: Icons.person,
                             label: 'Profil',
                             onTap: () => Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const ProfilePage()),
+                              MaterialPageRoute(
+                                  builder: (_) => const ProfilePage()),
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 10), // Dikurangi dari 14 ke 10
                     Expanded(
                       child: GridView.builder(
                         physics: const BouncingScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 5,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
@@ -313,172 +398,6 @@ class ModernHome extends StatelessWidget {
       ],
     );
   }
-}
-
-Widget _badge(String label, int value, List<Color> colors) {
-  return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: colors,
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      borderRadius: BorderRadius.circular(24),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.06),
-          blurRadius: 10,
-          offset: const Offset(0, 6),
-        ),
-      ],
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Icon(Icons.circle, size: 8, color: Colors.white),
-        const SizedBox(width: 8),
-        Text(
-          '$label: $value',
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _AnimatedSlotCard extends StatelessWidget {
-  final ParkingSlot slot;
-  final int index;
-  const _AnimatedSlotCard({required this.slot, required this.index});
-
-  @override
-  Widget build(BuildContext context) {
-    final isOccupied = slot.occupied;
-    const accent = Color(0xFF26A69A); // teal
-    final titleStyle = GoogleFonts.poppins(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
-      color: const Color(0xFF283D4A),
-    );
-    final subtitleStyle =
-        GoogleFonts.poppins(fontSize: 12, color: Colors.black54);
-
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 480 + (index * 40)),
-      curve: Curves.easeOutCubic,
-      builder: (context, t, child) {
-        return Opacity(
-          opacity: t,
-          child: Transform.translate(
-            offset: Offset(0, (1 - t) * 16),
-            child: child!,
-          ),
-        );
-      },
-      child: _HoverableCard(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          child: Material(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(24),
-              onTap: () {},
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
-                      blurRadius: 18,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 22,
-                      backgroundColor:
-                          isOccupied ? accent : const Color(0xFFE3F2FD),
-                      child: Icon(
-                        Icons.local_parking,
-                        color:
-                            isOccupied ? Colors.white : const Color(0xFF1E88E5),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Slot ${slot.id}', style: titleStyle),
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              const Icon(Icons.schedule,
-                                  size: 16, color: Colors.black45),
-                              const SizedBox(width: 6),
-                              Text(
-                                'Diperbarui ${slot.lastUpdated.hour.toString().padLeft(2, '0')}:${slot.lastUpdated.minute.toString().padLeft(2, '0')}',
-                                style: subtitleStyle,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    _statusChip(isOccupied),
-                    const SizedBox(width: 8),
-                    _PayButton(slot: slot),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Widget _statusChip(bool occupied) {
-  const accent = Color(0xFF26A69A);
-  return AnimatedContainer(
-    duration: const Duration(milliseconds: 200),
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-    decoration: BoxDecoration(
-      color: occupied ? accent : Colors.white,
-      borderRadius: BorderRadius.circular(20),
-      border: Border.all(color: occupied ? Colors.transparent : Colors.black12),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(occupied ? Icons.lock : Icons.lock_open,
-            size: 16, color: occupied ? Colors.white : const Color(0xFF1E88E5)),
-        const SizedBox(width: 6),
-        Text(
-          occupied ? 'Terisi' : 'Kosong',
-          style: GoogleFonts.poppins(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: occupied ? Colors.white : const Color(0xFF1E88E5),
-          ),
-        ),
-      ],
-    ),
-  );
 }
 
 class _GridSlotTile extends StatelessWidget {
@@ -542,9 +461,7 @@ class _GridSlotTile extends StatelessWidget {
                       width: 10,
                       height: 10,
                       decoration: BoxDecoration(
-                        color: isOccupied
-                            ? accent
-                            : const Color(0xFF9E9E9E),
+                        color: isOccupied ? accent : const Color(0xFF9E9E9E),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -581,206 +498,91 @@ class _GridSlotTile extends StatelessWidget {
         slotId: slot.id.toString(),
         amount: 5000,
       );
-    if (!context.mounted) return;
-    const accentPay = Color(0xFF00C298);
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Pembayaran Slot ${slot.id}',
-                      style: GoogleFonts.poppins(
-                          fontSize: 18, fontWeight: FontWeight.w700)),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  )
-                ],
-              ),
-              const SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.black12),
-                ),
-                child: Text(
-                  history.qrPayload ?? 'QR payload tidak tersedia',
-                  style: GoogleFonts.poppins(fontSize: 14),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
+      if (!context.mounted) return;
+      const accentPay = Color(0xFF00C298);
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        builder: (_) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Pembayaran Slot ${slot.id}',
+                        style: GoogleFonts.poppins(
+                            fontSize: 18, fontWeight: FontWeight.w700)),
+                    IconButton(
+                      icon: const Icon(Icons.close),
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Batal'),
-                    ),
+                    )
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.black12),
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: accentPay,
+                  child: Text(
+                    history.qrPayload ?? 'QR payload tidak tersedia',
+                    style: GoogleFonts.poppins(fontSize: 14),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Batal'),
                       ),
-                      onPressed: () async {
-                        await payment.markPaid(history.id);
-                        await payment.adjustBalance(uid, -history.amount);
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Pembayaran ditandai lunas'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                        }
-                      },
-                      child: const Text('Tandai Lunas'),
                     ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        );
-      },
-    );
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: accentPay,
+                        ),
+                        onPressed: () async {
+                          await payment.markPaid(history.id);
+                          await payment.adjustBalance(uid, -history.amount);
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Pembayaran ditandai lunas'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }
+                        },
+                        child: const Text('Tandai Lunas'),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        },
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Gagal membuat pembayaran: $e')),
       );
     }
-  }
-}
-
-class _PayButton extends StatelessWidget {
-  final ParkingSlot slot;
-  const _PayButton({required this.slot});
-
-  @override
-  Widget build(BuildContext context) {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    final payment = PaymentService(firestore: FirebaseFirestore.instance);
-    const accent = Color(0xFF00C298);
-    return FilledButton.icon(
-      style: FilledButton.styleFrom(
-        backgroundColor: accent,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-      onPressed: uid == null
-          ? null
-          : () async {
-              try {
-                final history = await payment.createPayment(
-                  userId: uid,
-                  slotId: slot.id.toString(),
-                  amount: 5000,
-                );
-                if (!context.mounted) return;
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  backgroundColor: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-                  ),
-                  builder: (_) {
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('QR Pembayaran',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w700)),
-                            IconButton(
-                              icon: const Icon(Icons.close),
-                              onPressed: () => Navigator.pop(context),
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.black12),
-                          ),
-                          child: Text(
-                            history.qrPayload ?? 'QR payload tidak tersedia',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: OutlinedButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Batal'),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: FilledButton(
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: accent,
-                                ),
-                                onPressed: () async {
-                                  await payment.markPaid(history.id);
-                                  await payment.adjustBalance(uid!, -history.amount);
-                                  if (context.mounted) {
-                                    Navigator.pop(context);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Pembayaran ditandai lunas'),
-                                        backgroundColor: Colors.green,
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: const Text('Tandai Lunas'),
-                              ),
-                            ),
-                          ],
-                        )
-                        ],
-                      ),
-                    );
-                  },
-                );
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Gagal membuat pembayaran: $e')),
-                );
-              }
-            },
-      icon: const Icon(Icons.payment, color: Colors.white, size: 18),
-      label: const Text('Bayar', style: TextStyle(color: Colors.white)),
-    );
   }
 }
 
@@ -829,80 +631,162 @@ class _BigStatusCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF00695C), Color(0xFF26A69A)],
+          colors: [Color(0xFF00796B), Color(0xFF26A69A)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
+            color: const Color(0xFF00796B).withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Status Parkir',
-              style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white)),
-          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Status Parkir',
+                  style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white.withOpacity(0.9))),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 6,
+                      height: 6,
+                      decoration: const BoxDecoration(
+                        color: Colors.greenAccent,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text('Live',
+                        style: GoogleFonts.poppins(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Row(
             children: [
-              _statusItem('Terisi', occupied),
+              _statusItem('Terisi', occupied, Icons.local_parking),
               const SizedBox(width: 12),
-              _statusItem('Kosong', empty),
+              _statusItem('Kosong', empty, Icons.check_circle_outline),
               const SizedBox(width: 12),
-              _statusItem('Total', total),
-              const Spacer(),
-              _pillButton(Icons.search, 'Cari Slot', onMap),
-              const SizedBox(width: 8),
-              _pillButton(Icons.receipt_long, 'Riwayat', onHistory),
+              _statusItem('Total', total, Icons.grid_view_rounded),
             ],
-          )
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: _actionButton(
+                  icon: Icons.search_rounded,
+                  label: 'Cari Slot',
+                  onTap: onMap,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _actionButton(
+                  icon: Icons.receipt_long_rounded,
+                  label: 'Riwayat',
+                  onTap: onHistory,
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  Widget _statusItem(String label, int value) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.12),
+  Widget _statusItem(String label, int value, IconData icon) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.white.withOpacity(0.2)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: Colors.white.withOpacity(0.9), size: 20),
+            const SizedBox(height: 4),
+            Text(label,
+                style: GoogleFonts.poppins(
+                    fontSize: 10, color: Colors.white.withOpacity(0.8))),
+            Text('$value',
+                style: GoogleFonts.poppins(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _actionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: const Color(0xFF00796B), size: 18),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF00796B),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label,
-              style: GoogleFonts.poppins(
-                  fontSize: 11, color: Colors.white.withOpacity(0.9))),
-          Text('$value',
-              style: GoogleFonts.poppins(
-                  fontSize: 16, fontWeight: FontWeight.w700, color: Colors.white)),
-        ],
-      ),
-    );
-  }
-
-  Widget _pillButton(IconData icon, String text, VoidCallback onTap) {
-    return TextButton.icon(
-      style: TextButton.styleFrom(
-        foregroundColor: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        backgroundColor: Colors.white.withOpacity(0.12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-      onPressed: onTap,
-      icon: Icon(icon, size: 16),
-      label: Text(text, style: const TextStyle(fontSize: 12)),
     );
   }
 }
@@ -911,7 +795,8 @@ class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  const _QuickActionCard({required this.icon, required this.label, required this.onTap});
+  const _QuickActionCard(
+      {required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -971,7 +856,6 @@ class _ModernFloatingNavBar extends StatefulWidget {
 class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
     with TickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
@@ -979,9 +863,6 @@ class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 140),
       vsync: this,
-    );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
 
@@ -1000,50 +881,59 @@ class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(20),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: Container(
-          height: 70,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color.fromARGB(215, 255, 255, 255),
-                Color.fromARGB(215, 248, 250, 252),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.22),
-              width: 1.0,
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color.fromARGB(30, 0, 0, 0),
-                blurRadius: 14,
-                offset: Offset(0, 7),
-              ),
-            ],
+      margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.grey.shade50,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(
+          color: Colors.black.withOpacity(0.08),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+            spreadRadius: 0,
           ),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(28),
+        child: Container(
+          height: 64, // Dikurangi dari 72 ke 64
+          padding: const EdgeInsets.symmetric(
+              horizontal: 8, vertical: 6), // Dikurangi dari 8 ke 6
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               _NavItem(
-                icon: Icons.grid_view_rounded,
+                icon: Icons.home_rounded,
                 label: 'Home',
                 isSelected: widget.currentIndex == 0,
                 onTap: () => _onItemTapped(0),
               ),
               _NavItem(
-                icon: Icons.map_rounded,
+                icon: Icons.location_on_rounded,
                 label: 'Map',
                 isSelected: widget.currentIndex == 1,
                 onTap: () => _onItemTapped(1),
               ),
               _NavItem(
-                icon: Icons.insights_rounded,
+                icon: Icons.bar_chart_rounded,
                 label: 'Stats',
                 isSelected: widget.currentIndex == 2,
                 onTap: () => _onItemTapped(2),
@@ -1071,54 +961,52 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(20),
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected
-                ? const Color(0xFF1E88E5).withOpacity(0.15)
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedScale(
-                scale: isSelected ? 1.08 : 1.0,
-                duration: const Duration(milliseconds: 160),
-                curve: Curves.easeOut,
-                child: Icon(
-                  icon,
-                  color: isSelected
-                      ? const Color(0xFF1E88E5)
-                      : Colors.black.withOpacity(0.6),
-                  size: 24,
+    const primaryColor = Color(0xFF00796B);
+    const selectedBg = Color(0xFFE0F2F1);
+
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCubic,
+            padding: const EdgeInsets.symmetric(
+                horizontal: 12, vertical: 4), // Dikurangi dari 6 ke 4
+            decoration: BoxDecoration(
+              color: isSelected ? selectedBg : Colors.transparent,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  padding: const EdgeInsets.all(2), // Dikurangi dari 4 ke 2
+                  child: Icon(
+                    icon,
+                    color: isSelected ? primaryColor : Colors.black45,
+                    size: isSelected ? 22 : 20, // Dikurangi dari 24/22 ke 22/20
+                  ),
                 ),
-              ),
-              const SizedBox(height: 2),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 180),
-                switchInCurve: Curves.easeOutCubic,
-                switchOutCurve: Curves.easeOutCubic,
-                child: isSelected
-                    ? Text(
-                        label,
-                        key: const ValueKey('label-selected'),
-                        style: GoogleFonts.poppins(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1E88E5),
-                        ),
-                      )
-                    : const SizedBox.shrink(key: ValueKey('label-empty')),
-              ),
-            ],
+                const SizedBox(height: 1), // Dikurangi dari 2 ke 1
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  style: GoogleFonts.poppins(
+                    fontSize:
+                        isSelected ? 10 : 9, // Dikurangi dari 11/10 ke 10/9
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                    color: isSelected ? primaryColor : Colors.black45,
+                  ),
+                  child: Text(label),
+                ),
+              ],
+            ),
           ),
         ),
       ),

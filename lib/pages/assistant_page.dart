@@ -58,7 +58,7 @@ class _AssistantPageState extends State<AssistantPage> {
                       color: isUser ? const Color(0xFF1E88E5) : Colors.white,
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
-                        BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 10, offset: const Offset(0, 4)),
+                        BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 4)),
                       ],
                     ),
                     child: Text(

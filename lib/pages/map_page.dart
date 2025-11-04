@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -56,10 +55,6 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void _recenter() {
-    mapController.move(center, zoom);
-  }
-
   void _showParkingInfo() {
     setState(() => _showInfoCard = true);
     _cardController.forward();
@@ -73,83 +68,74 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return SafeArea(
+      bottom: false, // Biarkan navbar HomePage tetap terlihat
+      child: Stack(
         children: [
-          // Main Map with rounded bottom corners
-          Container(
-            margin: const EdgeInsets.only(bottom: 20),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(25),
-                bottomRight: Radius.circular(25),
-              ),
+          // Main Map fullscreen
+          FlutterMap(
+            mapController: mapController,
+            options: MapOptions(
+              initialCenter: center,
+              initialZoom: zoom,
+              onTap: (_, __) => _hideParkingInfo(),
             ),
-            clipBehavior: Clip.hardEdge,
-            child: FlutterMap(
-              mapController: mapController,
-              options: MapOptions(
-                initialCenter: center,
-                initialZoom: zoom,
-                onTap: (_, __) => _hideParkingInfo(),
+            children: [
+              TileLayer(
+                // Basemap ringan dan modern dari Carto (light_all)
+                urlTemplate:
+                    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+                subdomains: const ['a', 'b', 'c', 'd'],
+                userAgentPackageName: 'smartpark_app',
               ),
-              children: [
-                TileLayer(
-                  // Basemap ringan dan modern dari Carto (light_all)
-                  urlTemplate:
-                      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-                  subdomains: const ['a', 'b', 'c', 'd'],
-                  userAgentPackageName: 'smartpark_app',
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: center,
-                      width: 60,
-                      height: 60,
-                      child: GestureDetector(
-                        onTap: _showParkingInfo,
-                        child: AnimatedBuilder(
-                          animation: _markerAnimation,
-                          builder: (context, child) {
-                            return Transform.scale(
-                              scale: _markerAnimation.value,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFF74C0E3),
-                                      Color(0xFF1E88E5)
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(0xFF1E88E5)
-                                          .withOpacity(0.4),
-                                      blurRadius: 15,
-                                      spreadRadius: 2,
-                                      offset: const Offset(0, 8),
-                                    ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: center,
+                    width: 60,
+                    height: 60,
+                    child: GestureDetector(
+                      onTap: _showParkingInfo,
+                      child: AnimatedBuilder(
+                        animation: _markerAnimation,
+                        builder: (context, child) {
+                          return Transform.scale(
+                            scale: _markerAnimation.value,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF74C0E3),
+                                    Color(0xFF1E88E5)
                                   ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
-                                child: const Icon(
-                                  Icons.local_parking,
-                                  color: Colors.white,
-                                  size: 28,
-                                ),
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF1E88E5)
+                                        .withValues(alpha: 0.4),
+                                    blurRadius: 15,
+                                    spreadRadius: 2,
+                                    offset: const Offset(0, 8),
+                                  ),
+                                ],
                               ),
-                            );
-                          },
-                        ),
+                              child: const Icon(
+                                Icons.local_parking,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
 
           // Modern Search Bar
@@ -158,19 +144,22 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             right: 16,
             top: 50,
             child: _ModernGlassCard(
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cari area parkir…',
-                  hintStyle: GoogleFonts.poppins(
-                    color: Colors.black54,
-                    fontSize: 16,
+              child: Material(
+                color: Colors.transparent,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Cari area parkir…',
+                    hintStyle: GoogleFonts.poppins(
+                      color: Colors.black54,
+                      fontSize: 16,
+                    ),
+                    prefixIcon:
+                        const Icon(Icons.search, color: Color(0xFF1E88E5)),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  prefixIcon:
-                      const Icon(Icons.search, color: Color(0xFF1E88E5)),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                  style: GoogleFonts.poppins(fontSize: 16),
                 ),
-                style: GoogleFonts.poppins(fontSize: 16),
               ),
             ),
           ),
@@ -178,7 +167,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
           // Modern Floating Action Buttons
           Positioned(
             right: 20,
-            bottom: 120, // Above the bottom navigation
+            bottom: 110, // Adjusted agar tidak tertutup navbar
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -269,7 +258,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
             Positioned(
               left: 16,
               right: 16,
-              bottom: 100,
+              bottom: 110, // Adjusted untuk navbar yang lebih tinggi
               child: SlideTransition(
                 position: _cardAnimation,
                 child: _ModernInfoCard(),
@@ -290,77 +279,31 @@ class _ModernGlassCard extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(28),
       child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-          decoration: BoxDecoration(
-            // Gradient-only agar ringan namun tetap modern
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color.fromARGB(230, 255, 255, 255),
-                Color.fromARGB(230, 248, 250, 252),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.3),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        decoration: BoxDecoration(
+          // Gradient-only agar ringan namun tetap modern
+          gradient: const LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(230, 255, 255, 255),
+              Color.fromARGB(230, 248, 250, 252),
             ],
           ),
-          child: child,
-        ),
-    );
-  }
-}
-
-class _FloatingButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-  final String? tooltip;
-
-  const _FloatingButton({
-    required this.icon,
-    required this.onTap,
-    this.tooltip,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Tooltip(
-      message: tooltip ?? '',
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
           borderRadius: BorderRadius.circular(28),
-          child: Container(
-            width: 56,
-            height: 56,
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.95),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 15,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: Icon(
-              icon,
-              color: const Color(0xFF1E88E5),
-              size: 24,
-            ),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.3),
+            width: 1,
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
+        child: child,
       ),
     );
   }
@@ -389,18 +332,18 @@ class _ModernFilterChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             color: selected
-                ? const Color(0xFF1E88E5).withOpacity(0.2)
-                : Colors.white.withOpacity(0.9),
+                ? const Color(0xFF1E88E5).withValues(alpha: 0.2)
+                : Colors.white.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
               color: selected
                   ? const Color(0xFF1E88E5)
-                  : Colors.grey.withOpacity(0.3),
+                  : Colors.grey.withValues(alpha: 0.3),
               width: 1,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: Colors.black.withValues(alpha: 0.08),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -437,12 +380,13 @@ class _ModernInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 25,
             offset: const Offset(0, 10),
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+        border:
+            Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -459,14 +403,13 @@ class _ModernInfoCard extends StatelessWidget {
               const Icon(Icons.location_on, size: 16, color: Colors.black54),
               const SizedBox(width: 4),
               Text('0.8 km',
-                  style: GoogleFonts.poppins(
-                      fontSize: 14, color: Colors.black54)),
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black54)),
               const SizedBox(width: 12),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
+                  color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text('Buka',
@@ -477,8 +420,8 @@ class _ModernInfoCard extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text('Kapasitas 12',
-                  style: GoogleFonts.poppins(
-                      fontSize: 14, color: Colors.black54)),
+                  style:
+                      GoogleFonts.poppins(fontSize: 14, color: Colors.black54)),
             ],
           ),
           const SizedBox(height: 16),
@@ -555,7 +498,6 @@ class _ModernFABState extends State<_ModernFAB>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
-  bool _isPressed = false;
 
   @override
   void initState() {
@@ -580,18 +522,15 @@ class _ModernFABState extends State<_ModernFAB>
   }
 
   void _handleTapDown(TapDownDetails details) {
-    setState(() => _isPressed = true);
     _controller.forward();
   }
 
   void _handleTapUp(TapUpDetails details) {
-    setState(() => _isPressed = false);
     _controller.reverse();
     widget.onPressed();
   }
 
   void _handleTapCancel() {
-    setState(() => _isPressed = false);
     _controller.reverse();
   }
 
@@ -612,22 +551,22 @@ class _ModernFABState extends State<_ModernFAB>
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF1E88E5).withOpacity(0.2),
+                      color: const Color(0xFF1E88E5).withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha: 0.1),
                       blurRadius: 10,
                       offset: const Offset(0, 4),
                     ),
                   ],
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
