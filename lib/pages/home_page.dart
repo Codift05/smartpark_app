@@ -161,34 +161,55 @@ class ModernHome extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [
-                                    Color(0xFF00695C),
-                                    Color(0xFF26A69A)
-                                  ],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                'lib/img/Logo Nemu.in.png',
+                                width: 48,
+                                height: 48,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Container(
+                                    width: 48,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFF00D4AA),
+                                          Color(0xFF00B894)
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Icon(
+                                        Icons.local_parking_rounded,
+                                        color: Colors.white,
+                                        size: 28),
+                                  );
+                                },
                               ),
-                              child: const Icon(Icons.local_parking_rounded,
-                                  color: Colors.white, size: 24),
                             ),
                             const SizedBox(width: 12),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'smartpark',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF00695C),
-                                    letterSpacing: -0.5,
-                                  ),
+                                Image.asset(
+                                  'lib/img/Logo Nemu.in 4.png',
+                                  height: 15,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Text(
+                                      'smartpark',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700,
+                                        color: const Color(0xFF1A1A1A),
+                                        letterSpacing: -0.5,
+                                      ),
+                                    );
+                                  },
                                 ),
                                 StreamBuilder<User?>(
                                   stream:
@@ -212,10 +233,10 @@ class ModernHome extends StatelessWidget {
                                           style: GoogleFonts.poppins(
                                             fontSize: 13,
                                             fontWeight: FontWeight.w600,
-                                            color: const Color(0xFF00695C),
+                                            color: const Color(0xFF1A1A1A),
                                           ),
                                         ),
-                                        const Text(' 👋'),
+                                        const Text('Admin'),
                                       ],
                                     );
                                   },
@@ -240,7 +261,7 @@ class ModernHome extends StatelessWidget {
                               ),
                               child: IconButton(
                                 icon: const Icon(Icons.notifications_none,
-                                    color: Color(0xFF00695C)),
+                                    color: Color(0xFF616161)),
                                 onPressed: () {},
                               ),
                             ),
@@ -408,11 +429,11 @@ class _GridSlotTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isOccupied = slot.occupied;
-    const accent = Color(0xFF26A69A);
+    const accent = Color(0xFF00D4AA);
     final numberStyle = GoogleFonts.poppins(
       fontSize: 20,
       fontWeight: FontWeight.w700,
-      color: isOccupied ? accent : const Color(0xFF283D4A),
+      color: isOccupied ? accent : const Color(0xFF1A1A1A),
     );
 
     return TweenAnimationBuilder<double>(
@@ -499,7 +520,7 @@ class _GridSlotTile extends StatelessWidget {
         amount: 5000,
       );
       if (!context.mounted) return;
-      const accentPay = Color(0xFF00C298);
+      const accentPay = Color(0xFF00D4AA);
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -631,14 +652,14 @@ class _BigStatusCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF00796B), Color(0xFF26A69A)],
+          colors: [Color(0xFF00D4AA), Color(0xFF00B894)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00796B).withOpacity(0.3),
+            color: const Color(0xFF00D4AA).withOpacity(0.25),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -773,14 +794,14 @@ class _BigStatusCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, color: const Color(0xFF00796B), size: 18),
+              Icon(icon, color: const Color(0xFF00D4AA), size: 18),
               const SizedBox(width: 6),
               Text(
                 label,
                 style: GoogleFonts.poppins(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF00796B),
+                  color: const Color(0xFF00D4AA),
                 ),
               ),
             ],
@@ -824,8 +845,8 @@ class _QuickActionCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 18,
-                  backgroundColor: const Color(0xFFE3F2FD),
-                  child: Icon(icon, color: const Color(0xFF1E88E5)),
+                  backgroundColor: const Color(0xFFE0F7F4),
+                  child: Icon(icon, color: const Color(0xFF00D4AA)),
                 ),
                 const SizedBox(width: 12),
                 Text(label,
@@ -961,8 +982,8 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF00796B);
-    const selectedBg = Color(0xFFE0F2F1);
+    const primaryColor = Color(0xFF00D4AA);
+    const selectedBg = Color(0xFFE0F7F4);
 
     return Expanded(
       child: Material(

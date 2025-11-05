@@ -49,10 +49,10 @@ class SlotsPage extends StatelessWidget {
                     runSpacing: 8,
                     children: [
                       _statChip(
-                          context, 'Terisi', occupiedCount, AppColors.blue),
+                          context, 'Terisi', occupiedCount, AppColors.primary),
                       _statChip(context, 'Kosong', emptyCount, Colors.green),
-                      _statChip(context, 'Total', slots.length,
-                          AppColors.navy.withValues(alpha: 0.7)),
+                      _statChip(
+                          context, 'Total', slots.length, AppColors.textMedium),
                     ],
                   ),
                   const SizedBox(height: 12),
@@ -83,12 +83,13 @@ class SlotsPage extends StatelessWidget {
                                   CircleAvatar(
                                     radius: 18,
                                     backgroundColor: occupied
-                                        ? AppColors.blue
-                                        : AppColors.navy.withValues(alpha: 0.1),
+                                        ? AppColors.primary
+                                        : AppColors.textMedium
+                                            .withValues(alpha: 0.1),
                                     child: Icon(Icons.local_parking,
                                         color: occupied
                                             ? Colors.white
-                                            : AppColors.blue,
+                                            : AppColors.primary,
                                         size: 18),
                                   ),
                                   const SizedBox(width: 12),
@@ -102,7 +103,7 @@ class SlotsPage extends StatelessWidget {
                                         horizontal: 10, vertical: 4),
                                     decoration: BoxDecoration(
                                       color: occupied
-                                          ? AppColors.blue
+                                          ? AppColors.primary
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
@@ -119,8 +120,7 @@ class SlotsPage extends StatelessWidget {
                                             size: 14,
                                             color: occupied
                                                 ? Colors.white
-                                                : AppColors.navy
-                                                    .withValues(alpha: 0.7)),
+                                                : AppColors.textMedium),
                                         const SizedBox(width: 6),
                                         Text(
                                           occupied ? 'Terisi' : 'Kosong',
@@ -128,10 +128,7 @@ class SlotsPage extends StatelessWidget {
                                               .copyWith(
                                                   color: occupied
                                                       ? Colors.white
-                                                      : AppColors
-                                                          .navy
-                                                          .withValues(
-                                                              alpha: 0.7)),
+                                                      : AppColors.textMedium),
                                         ),
                                       ],
                                     ),
@@ -183,7 +180,8 @@ class SlotsPage extends StatelessWidget {
               decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 8),
           Text('$label: $value',
-              style: AppText.caption(context).copyWith(color: AppColors.navy)),
+              style:
+                  AppText.caption(context).copyWith(color: AppColors.textDark)),
         ],
       ),
     );

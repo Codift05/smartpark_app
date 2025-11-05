@@ -55,7 +55,7 @@ class _AssistantPageState extends State<AssistantPage> {
                     margin: const EdgeInsets.symmetric(vertical: 6),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: isUser ? const Color(0xFF1E88E5) : Colors.white,
+                      color: isUser ? const Color(0xFF00D4AA) : Colors.white,
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, 4)),
@@ -95,3 +95,4 @@ class _AssistantPageState extends State<AssistantPage> {
     );
   }
 }
+

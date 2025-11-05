@@ -41,8 +41,8 @@ class ProfilePage extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Color(0xFF00796B),
-                          Color(0xFF26A69A),
+                          Color(0xFF00D4AA),
+                          Color(0xFF00B894),
                         ],
                       ),
                       boxShadow: [
@@ -139,7 +139,7 @@ class ProfilePage extends StatelessWidget {
                                           ? const Icon(
                                               Icons.person_rounded,
                                               size: 50,
-                                              color: Color(0xFF00796B),
+                                              color: Color(0xFF00D4AA),
                                             )
                                           : null,
                                     ),
@@ -165,7 +165,7 @@ class ProfilePage extends StatelessWidget {
                                       child: const Icon(
                                         Icons.camera_alt_rounded,
                                         size: 16,
-                                        color: Color(0xFF00796B),
+                                        color: Color(0xFF00D4AA),
                                       ),
                                     ),
                                   ),
@@ -220,7 +220,7 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(height: 16),
 
                       // Account Settings Section
-                      _SectionTitle(title: 'Akun Saya'),
+                      const _SectionTitle(title: 'Akun Saya'),
                       const SizedBox(height: 12),
 
                       _ModernCard(
@@ -248,14 +248,11 @@ class ProfilePage extends StatelessWidget {
                               ],
                             ),
                             _Divider(),
-                            _MenuTile(
+                            const _MenuTile(
                               icon: Icons.lock_outline_rounded,
                               title: 'Keamanan',
                               subtitle: 'Password & verifikasi',
-                              gradient: const [
-                                Color(0xFF4facfe),
-                                Color(0xFF00f2fe)
-                              ],
+                              gradient: [Color(0xFF4facfe), Color(0xFF00f2fe)],
                             ),
                           ],
                         ),
@@ -264,7 +261,7 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // Preferences Section
-                      _SectionTitle(title: 'Preferensi'),
+                      const _SectionTitle(title: 'Preferensi'),
                       const SizedBox(height: 12),
 
                       _ModernCard(
@@ -283,24 +280,18 @@ class ProfilePage extends StatelessWidget {
                               ],
                             ),
                             _Divider(),
-                            _MenuTile(
+                            const _MenuTile(
                               icon: Icons.language_rounded,
                               title: 'Bahasa',
                               subtitle: 'Indonesia',
-                              gradient: const [
-                                Color(0xFF30cfd0),
-                                Color(0xFF330867)
-                              ],
+                              gradient: [Color(0xFF30cfd0), Color(0xFF330867)],
                             ),
                             _Divider(),
-                            _MenuTile(
+                            const _MenuTile(
                               icon: Icons.palette_outlined,
                               title: 'Tema',
                               subtitle: 'Terang',
-                              gradient: const [
-                                Color(0xFFa8edea),
-                                Color(0xFFfed6e3)
-                              ],
+                              gradient: [Color(0xFFa8edea), Color(0xFFfed6e3)],
                             ),
                           ],
                         ),
@@ -309,40 +300,31 @@ class ProfilePage extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       // Support Section
-                      _SectionTitle(title: 'Bantuan & Dukungan'),
+                      const _SectionTitle(title: 'Bantuan & Dukungan'),
                       const SizedBox(height: 12),
 
                       _ModernCard(
                         child: Column(
                           children: [
-                            _MenuTile(
+                            const _MenuTile(
                               icon: Icons.help_outline_rounded,
                               title: 'Pusat Bantuan',
                               subtitle: 'FAQ & panduan',
-                              gradient: const [
-                                Color(0xFF00c6ff),
-                                Color(0xFF0072ff)
-                              ],
+                              gradient: [Color(0xFF00c6ff), Color(0xFF0072ff)],
                             ),
                             _Divider(),
-                            _MenuTile(
+                            const _MenuTile(
                               icon: Icons.headset_mic_outlined,
                               title: 'Hubungi Kami',
                               subtitle: 'Customer service 24/7',
-                              gradient: const [
-                                Color(0xFFf857a6),
-                                Color(0xFFff5858)
-                              ],
+                              gradient: [Color(0xFFf857a6), Color(0xFFff5858)],
                             ),
                             _Divider(),
-                            _MenuTile(
+                            const _MenuTile(
                               icon: Icons.info_outline_rounded,
                               title: 'Tentang',
                               subtitle: 'SmartPark v1.0.0',
-                              gradient: const [
-                                Color(0xFF89f7fe),
-                                Color(0xFF66a6ff)
-                              ],
+                              gradient: [Color(0xFF89f7fe), Color(0xFF66a6ff)],
                             ),
                           ],
                         ),
@@ -419,7 +401,7 @@ class ProfilePage extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF00796B), width: 2),
+              borderSide: const BorderSide(color: Color(0xFF00D4AA), width: 2),
             ),
           ),
         ),
@@ -435,7 +417,7 @@ class ProfilePage extends StatelessWidget {
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF00796B),
+              backgroundColor: const Color(0xFF00D4AA),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
@@ -728,7 +710,7 @@ class _MenuTile extends StatelessWidget {
                 ),
               ),
               if (onTap != null)
-                Icon(
+                const Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 16,
                   color: Colors.black26,
@@ -811,7 +793,7 @@ class _SwitchTile extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: const Color(0xFF00796B),
+            activeThumbColor: const Color(0xFF00D4AA),
           ),
         ],
       ),
@@ -833,3 +815,4 @@ class _Divider extends StatelessWidget {
     );
   }
 }
+

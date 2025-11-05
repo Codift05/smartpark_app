@@ -118,8 +118,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFF74C0E3),
-                                    Color(0xFF1E88E5)
+                                    Color(0xFF7FFFE0),
+                                    Color(0xFF00D4AA)
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -127,7 +127,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF1E88E5)
+                                    color: const Color(0xFF00D4AA)
                                         .withValues(alpha: 0.4),
                                     blurRadius: 15,
                                     spreadRadius: 2,
@@ -165,7 +165,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       fontSize: 16,
                     ),
                     prefixIcon:
-                        const Icon(Icons.search, color: Color(0xFF1E88E5)),
+                        const Icon(Icons.search, color: Color(0xFF00D4AA)),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -192,7 +192,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           'Pusatkan ke lokasi saya',
                           style: GoogleFonts.poppins(),
                         ),
-                        backgroundColor: const Color(0xFF1E88E5),
+                        backgroundColor: const Color(0xFF00D4AA),
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -213,7 +213,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           'Ubah layer peta',
                           style: GoogleFonts.poppins(),
                         ),
-                        backgroundColor: const Color(0xFF1E88E5),
+                        backgroundColor: const Color(0xFF00D4AA),
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -351,12 +351,12 @@ class _ModernFilterChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             color: selected
-                ? const Color(0xFF1E88E5).withValues(alpha: 0.2)
+                ? const Color(0xFF00D4AA).withValues(alpha: 0.2)
                 : Colors.white.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
               color: selected
-                  ? const Color(0xFF1E88E5)
+                  ? const Color(0xFF00D4AA)
                   : Colors.grey.withValues(alpha: 0.3),
               width: 1,
             ),
@@ -373,7 +373,7 @@ class _ModernFilterChip extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: selected ? const Color(0xFF1E88E5) : Colors.black87,
+              color: selected ? const Color(0xFF00D4AA) : Colors.black87,
             ),
           ),
         ),
@@ -450,7 +450,7 @@ class _ModernInfoCard extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF74C0E3), Color(0xFF1E88E5)],
+                      colors: [Color(0xFF7FFFE0), Color(0xFF00D4AA)],
                     ),
                     borderRadius: BorderRadius.circular(25),
                   ),
@@ -477,7 +477,7 @@ class _ModernInfoCard extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF1E88E5)),
+                    side: const BorderSide(color: Color(0xFF00D4AA)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -487,7 +487,7 @@ class _ModernInfoCard extends StatelessWidget {
                       style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1E88E5))),
+                          color: const Color(0xFF00D4AA))),
                 ),
               ),
             ],
@@ -574,7 +574,7 @@ class _ModernFABState extends State<_ModernFAB>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF1E88E5).withValues(alpha: 0.2),
+                      color: const Color(0xFF00D4AA).withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -597,7 +597,7 @@ class _ModernFABState extends State<_ModernFAB>
                     child: Center(
                       child: Icon(
                         widget.icon,
-                        color: const Color(0xFF1E88E5),
+                        color: const Color(0xFF00D4AA),
                         size: 24,
                       ),
                     ),
@@ -676,13 +676,13 @@ class _ModernLoadingOverlay extends StatelessWidget {
                             end: Alignment.bottomRight,
                             colors: [
                               Color.lerp(
-                                const Color(0xFF74C0E3),
-                                const Color(0xFF1E88E5),
+                                const Color(0xFF7FFFE0),
+                                const Color(0xFF00D4AA),
                                 animationController.value,
                               )!,
                               Color.lerp(
-                                const Color(0xFF1E88E5),
-                                const Color(0xFF74C0E3),
+                                const Color(0xFF00D4AA),
+                                const Color(0xFF7FFFE0),
                                 animationController.value,
                               )!,
                             ],
@@ -690,7 +690,7 @@ class _ModernLoadingOverlay extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF1E88E5).withValues(
+                              color: const Color(0xFF00D4AA).withValues(
                                 alpha: 0.3 + (animationController.value * 0.2),
                               ),
                               blurRadius: 20 + (animationController.value * 10),
@@ -724,7 +724,7 @@ class _ModernLoadingOverlay extends StatelessWidget {
                         style: GoogleFonts.poppins(
                           fontSize: 18,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF1E88E5),
+                          color: const Color(0xFF00D4AA),
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -750,8 +750,8 @@ class _ModernLoadingOverlay extends StatelessWidget {
                           height: 8,
                           decoration: BoxDecoration(
                             color: Color.lerp(
-                              const Color(0xFF1E88E5).withValues(alpha: 0.3),
-                              const Color(0xFF1E88E5),
+                              const Color(0xFF00D4AA).withValues(alpha: 0.3),
+                              const Color(0xFF00D4AA),
                               dotValue,
                             ),
                             shape: BoxShape.circle,
@@ -789,13 +789,13 @@ class _ModernLoadingOverlay extends StatelessWidget {
                             borderRadius: BorderRadius.circular(2),
                             gradient: const LinearGradient(
                               colors: [
-                                Color(0xFF74C0E3),
-                                Color(0xFF1E88E5),
+                                Color(0xFF7FFFE0),
+                                Color(0xFF00D4AA),
                               ],
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF1E88E5)
+                                color: const Color(0xFF00D4AA)
                                     .withValues(alpha: 0.4),
                                 blurRadius: 8,
                               ),
@@ -814,3 +814,4 @@ class _ModernLoadingOverlay extends StatelessWidget {
     );
   }
 }
+
