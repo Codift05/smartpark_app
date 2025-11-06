@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // User profile documents: users/{uid}
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Payment history documents: payment_history/{doc}
+    match /payment_history/{doc} {
+      // Allow the authenticated user to create/read/update/delete their own records
+      allow create: if request.auth != null && request.resource.data.user_id == request.auth.uid;
+      allow read: if request.auth != null && resource.data.user_id == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.user_id == request.auth.uid;
+    }
+
+    // Default: deny other collections by default (safer for development than full open access)
+  }
+}

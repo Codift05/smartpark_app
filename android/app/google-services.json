@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "965768501033",
+    "project_id": "smartparkapp-4e790",
+    "storage_bucket": "smartparkapp-4e790.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965768501033:android:a7999d5d8c3f213d84c938",
+        "android_client_info": {
+          "package_name": "com.example.pathopredict_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvDAEzrrTWASb-xlNAX535lar_3Bi-oO4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
