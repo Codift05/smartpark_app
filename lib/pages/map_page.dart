@@ -135,10 +135,21 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                   ),
                                 ],
                               ),
-                              child: const Icon(
-                                Icons.local_parking,
-                                color: Colors.white,
-                                size: 28,
+                              child: ClipOval(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Image.asset(
+                                    'lib/img/Logo Nemu.in.png',
+                                    fit: BoxFit.contain,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return const Icon(
+                                        Icons.local_parking,
+                                        color: Colors.white,
+                                        size: 28,
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
                             ),
                           );
@@ -814,4 +825,3 @@ class _ModernLoadingOverlay extends StatelessWidget {
     );
   }
 }
-

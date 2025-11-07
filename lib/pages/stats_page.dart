@@ -299,11 +299,11 @@ class _StatsPageState extends State<StatsPage> {
                               color: const Color(0xFF00C9A7),
                             ),
                             const SizedBox(height: 12),
-                            _ActivityItem(
+                            const _ActivityItem(
                               icon: Icons.schedule_rounded,
                               label: 'Waktu Puncak',
                               value: '12:00 - 13:00 WIB',
-                              color: const Color(0xFF6B7280),
+                              color: Color(0xFF6B7280),
                             ),
                             const SizedBox(height: 12),
                             _ActivityItem(
@@ -616,8 +616,8 @@ class _ActivityItem extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.arrow_forward_ios_rounded,
-              size: 16, color: const Color(0xFFD1D5DB)),
+          const Icon(Icons.arrow_forward_ios_rounded,
+              size: 16, color: Color(0xFFD1D5DB)),
         ],
       ),
     );

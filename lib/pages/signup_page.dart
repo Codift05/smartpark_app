@@ -135,10 +135,22 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.person_add_rounded,
-                    size: 40,
-                    color: Colors.white,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Image.asset(
+                        'lib/img/Logo Nemu.in.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.person_add_rounded,
+                            size: 40,
+                            color: Colors.white,
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),

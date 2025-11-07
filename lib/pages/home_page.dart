@@ -165,8 +165,8 @@ class ModernHome extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                               child: Image.asset(
                                 'lib/img/Logo Nemu.in.png',
-                                width: 48,
-                                height: 48,
+                                width: 32,
+                                height: 32,
                                 fit: BoxFit.contain,
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
@@ -197,7 +197,7 @@ class ModernHome extends StatelessWidget {
                               children: [
                                 Image.asset(
                                   'lib/img/Logo Nemu.in 4.png',
-                                  height: 15,
+                                  height: 12,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) {
                                     return Text(
@@ -358,13 +358,6 @@ class ModernHome extends StatelessWidget {
                       occupied: occupiedCount,
                       empty: emptyCount,
                       total: slots.length,
-                      onHistory: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (_) => const PaymentHistoryPage()),
-                      ),
-                      onMap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const MapPage()),
-                      ),
                     ),
                     const SizedBox(height: 12), // Dikurangi dari 16 ke 12
                     Row(
@@ -637,14 +630,10 @@ class _BigStatusCard extends StatelessWidget {
   final int occupied;
   final int empty;
   final int total;
-  final VoidCallback onHistory;
-  final VoidCallback onMap;
   const _BigStatusCard({
     required this.occupied,
     required this.empty,
     required this.total,
-    required this.onHistory,
-    required this.onMap,
   });
 
   @override
@@ -715,26 +704,6 @@ class _BigStatusCard extends StatelessWidget {
               _statusItem('Total', total, Icons.grid_view_rounded),
             ],
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Expanded(
-                child: _actionButton(
-                  icon: Icons.search_rounded,
-                  label: 'Cari Slot',
-                  onTap: onMap,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _actionButton(
-                  icon: Icons.receipt_long_rounded,
-                  label: 'Riwayat',
-                  onTap: onHistory,
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -763,49 +732,6 @@ class _BigStatusCard extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: Colors.white)),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _actionButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: const Color(0xFF00D4AA), size: 18),
-              const SizedBox(width: 6),
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: const Color(0xFF00D4AA),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
