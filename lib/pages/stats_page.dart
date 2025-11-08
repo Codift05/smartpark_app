@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../services/mock_parking_service.dart';
 import '../models/prediction.dart';
 import '../models/slot.dart';
+import '../ui/loading_animation.dart';
 
 class StatsPage extends StatefulWidget {
   final MockParkingService service;
@@ -143,7 +144,11 @@ class _StatsPageState extends State<StatsPage> {
                     builder: (context, snap) {
                       final pred = snap.data;
                       if (pred == null) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const ModernLoadingAnimation(
+                          type: LoadingType.builtIn,
+                          size: 120,
+                          customMessage: 'Memuat prediksi...',
+                        );
                       }
 
                       // Update timestamp

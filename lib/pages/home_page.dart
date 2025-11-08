@@ -8,9 +8,11 @@ import 'stats_page.dart';
 import 'payment_history_page.dart';
 import 'profile_page.dart';
 import 'assistant_page.dart';
+import 'modern_slots_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/payment_service.dart';
+import '../ui/loading_animation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -146,7 +148,11 @@ class ModernHome extends StatelessWidget {
             stream: service.slotsStream,
             builder: (context, snap) {
               if (!snap.hasData) {
-                return const Center(child: CircularProgressIndicator());
+                return const ModernLoadingAnimation(
+                  type: LoadingType.builtIn,
+                  size: 200,
+                  customMessage: 'Memuat data parkir...',
+                );
               }
               final slots = snap.data as List<ParkingSlot>;
               final occupiedCount = slots.where((s) => s.occupied).length;
@@ -159,91 +165,48 @@ class ModernHome extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.asset(
-                                'lib/img/Logo Nemu.in.png',
-                                width: 32,
-                                height: 32,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    width: 48,
-                                    height: 48,
-                                    decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFF00D4AA),
-                                          Color(0xFF00B894)
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: const Icon(
-                                        Icons.local_parking_rounded,
-                                        color: Colors.white,
-                                        size: 28),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Column(
+                        // Username Section
+                        StreamBuilder<User?>(
+                          stream: FirebaseAuth.instance.authStateChanges(),
+                          builder: (context, snapshot) {
+                            final displayName = snapshot.data?.displayName ??
+                                snapshot.data?.email?.split('@')[0] ??
+                                'User';
+                            return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Image.asset(
-                                  'lib/img/Logo Nemu.in 4.png',
-                                  height: 12,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Text(
-                                      'smartpark',
-                                      style: GoogleFonts.poppins(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700,
-                                        color: const Color(0xFF1A1A1A),
-                                        letterSpacing: -0.5,
-                                      ),
-                                    );
-                                  },
+                                Text(
+                                  'Nemu.In',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFF1A1A1A),
+                                    letterSpacing: -0.5,
+                                  ),
                                 ),
-                                StreamBuilder<User?>(
-                                  stream:
-                                      FirebaseAuth.instance.authStateChanges(),
-                                  builder: (context, snapshot) {
-                                    final displayName = snapshot
-                                            .data?.displayName ??
-                                        snapshot.data?.email?.split('@')[0] ??
-                                        'User';
-                                    return Row(
-                                      children: [
-                                        Text(
-                                          'Halo, ',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            color: Colors.black54,
-                                          ),
-                                        ),
-                                        Text(
-                                          displayName,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w600,
-                                            color: const Color(0xFF1A1A1A),
-                                          ),
-                                        ),
-                                        const Text('Admin'),
-                                      ],
-                                    );
-                                  },
+                                const SizedBox(height: 2),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Halo, ',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                    Text(
+                                      displayName,
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF00D4AA),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
-                            ),
-                          ],
+                            );
+                          },
                         ),
                         Row(
                           children: [
@@ -359,7 +322,9 @@ class ModernHome extends StatelessWidget {
                       empty: emptyCount,
                       total: slots.length,
                     ),
-                    const SizedBox(height: 12), // Dikurangi dari 16 ke 12
+                    const SizedBox(height: 16),
+
+                    // Quick Action Cards - Dipindah ke atas
                     Row(
                       children: [
                         Expanded(
@@ -385,24 +350,61 @@ class ModernHome extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10), // Dikurangi dari 14 ke 10
-                    Expanded(
-                      child: GridView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 5,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                          childAspectRatio: 1.0,
+
+                    const SizedBox(height: 16),
+
+                    // Modern Service Cards - Gojek/Grab Style
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _ModernServiceCard(
+                            title: 'Lihat Slot',
+                            subtitle: '$emptyCount slot tersedia',
+                            icon: Icons.local_parking_rounded,
+                            gradientColors: const [
+                              Color(0xFF00D4AA),
+                              Color(0xFF00B894),
+                            ],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      ModernSlotsPage(service: service),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                        itemCount: slots.length,
-                        itemBuilder: (context, i) {
-                          final slot = slots[i];
-                          return _GridSlotTile(slot: slot, index: i);
-                        },
-                      ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _ModernServiceCard(
+                            title: 'AI Assistant',
+                            subtitle: 'Tanya parkir',
+                            icon: Icons.smart_toy_rounded,
+                            gradientColors: const [
+                              Color(0xFF7C4DFF),
+                              Color(0xFF651FFF),
+                            ],
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const AssistantPage(),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
+
+                    const SizedBox(height: 16),
+
+                    // Hero Banner Card - Dipindah ke bawah
+                    _HeroBannerCard(),
+
+                    const SizedBox(height: 20),
                   ],
                 ),
               );
@@ -414,189 +416,250 @@ class ModernHome extends StatelessWidget {
   }
 }
 
-class _GridSlotTile extends StatelessWidget {
-  final ParkingSlot slot;
-  final int index;
-  const _GridSlotTile({required this.slot, required this.index});
+/// Hero Banner Card dengan gambar Smart Parking
+class _HeroBannerCard extends StatelessWidget {
+  const _HeroBannerCard();
 
   @override
   Widget build(BuildContext context) {
-    final isOccupied = slot.occupied;
-    const accent = Color(0xFF00D4AA);
-    final numberStyle = GoogleFonts.poppins(
-      fontSize: 20,
-      fontWeight: FontWeight.w700,
-      color: isOccupied ? accent : const Color(0xFF1A1A1A),
-    );
-
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0.0, end: 1.0),
-      duration: Duration(milliseconds: 420 + (index * 30)),
-      curve: Curves.easeOutCubic,
-      builder: (context, t, child) {
-        return Opacity(
-          opacity: t,
-          child: Transform.translate(
-            offset: Offset(0, (1 - t) * 12),
-            child: child!,
+    return Container(
+      height: 180, // Diperbesar dari 160 ke 180
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1E3A5F), // Dark blue
+            Color(0xFF2C5F7F), // Medium blue
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF1E3A5F).withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
           ),
-        );
-      },
-      child: _HoverableCard(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(18),
-            onTap: () => _openPayment(context),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Decorative elements
+          Positioned(
+            top: -30,
+            left: -30,
+            child: Container(
+              width: 120,
+              height: 120,
               decoration: BoxDecoration(
-                color: isOccupied ? accent.withOpacity(0.08) : Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-                border: Border.all(
-                  color: isOccupied ? accent.withOpacity(0.25) : Colors.black12,
-                  width: 1,
-                ),
+                color: Colors.white.withOpacity(0.05),
+                shape: BoxShape.circle,
               ),
-              child: Stack(
-                children: [
-                  // Status dot di pojok kanan atas
-                  Positioned(
-                    right: 8,
-                    top: 8,
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: isOccupied ? accent : const Color(0xFF9E9E9E),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 4,
+            ),
+          ),
+          Positioned(
+            bottom: -20,
+            right: -20,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                // Left side - Text
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'SMART PARKING',
+                        style: GoogleFonts.poppins(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: const Color(0xFF00D4AA),
+                          letterSpacing: 1.5,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'SOLUTIONS',
+                        style: GoogleFonts.poppins(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                          height: 1.1,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: const Color(0xFF00D4AA).withOpacity(0.3),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'AVAILABLE SPOTS ',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                                Text(
+                                  '',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  // Nomor slot
-                  Center(child: Text('${slot.id}', style: numberStyle)),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _openPayment(BuildContext context) async {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Harap login terlebih dahulu')),
-      );
-      return;
-    }
-    try {
-      final payment = PaymentService(firestore: FirebaseFirestore.instance);
-      final history = await payment.createPayment(
-        userId: uid,
-        slotId: slot.id.toString(),
-        amount: 5000,
-      );
-      if (!context.mounted) return;
-      const accentPay = Color(0xFF00D4AA);
-      showModalBottomSheet(
-        context: context,
-        isScrollControlled: true,
-        backgroundColor: Colors.white,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        builder: (_) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Pembayaran Slot ${slot.id}',
-                        style: GoogleFonts.poppins(
-                            fontSize: 18, fontWeight: FontWeight.w700)),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 10),
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.black12),
-                  ),
-                  child: Text(
-                    history.qrPayload ?? 'QR payload tidak tersedia',
-                    style: GoogleFonts.poppins(fontSize: 14),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Batal'),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: accentPay,
-                        ),
-                        onPressed: () async {
-                          await payment.markPaid(history.id);
-                          await payment.adjustBalance(uid, -history.amount);
-                          if (context.mounted) {
-                            Navigator.pop(context);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Pembayaran ditandai lunas'),
-                                backgroundColor: Colors.green,
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(2),
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF00D4AA),
+                                  Colors.transparent,
+                                ],
                               ),
-                            );
-                          }
-                        },
-                        child: const Text('Tandai Lunas'),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'PARKED VEHICLES',
+                            style: GoogleFonts.poppins(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white60,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                )
+                    ],
+                  ),
+                ),
+
+                // Right side - Logo
+                Expanded(
+                  flex: 2,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Rotating circles
+                      Container(
+                        width: 110,
+                        height: 110,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color(0xFF00D4AA).withOpacity(0.3),
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: 90,
+                        height: 90,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: const Color(0xFF00D4AA).withOpacity(0.2),
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                      // Logo di tengah (diperbesar)
+                      Container(
+                        width: 70,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipOval(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: ColorFiltered(
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
+                              child: Image.asset(
+                                'lib/img/Logo Nemu.in.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Fallback ke icon P jika logo tidak ditemukan
+                                  return const Icon(
+                                    Icons.local_parking_rounded,
+                                    color: Colors.white,
+                                    size: 40,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Small car and motorcycle icons
+                      Positioned(
+                        top: 15,
+                        left: 45,
+                        child: Icon(
+                          Icons.directions_car_rounded,
+                          color: Colors.white.withOpacity(0.6),
+                          size: 20,
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 15,
+                        right: 45,
+                        child: Icon(
+                          Icons.two_wheeler_rounded,
+                          color: Colors.white.withOpacity(0.6),
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-          );
-        },
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal membuat pembayaran: $e')),
-      );
-    }
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -954,6 +1017,140 @@ class _NavItem extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Modern Service Card - Gojek/Grab Style
+class _ModernServiceCard extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  final List<Color> gradientColors;
+  final VoidCallback onTap;
+
+  const _ModernServiceCard({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.gradientColors,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          height: 140,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: gradientColors,
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: gradientColors[0].withOpacity(0.3),
+                blurRadius: 12,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              // Decorative circles
+              Positioned(
+                top: -20,
+                right: -20,
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: -15,
+                left: -15,
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+
+              // Content
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Icon
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Icon(
+                        icon,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+
+                    // Text
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              subtitle,
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withOpacity(0.9),
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Icon(
+                              Icons.arrow_forward_rounded,
+                              color: Colors.white.withOpacity(0.9),
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),
