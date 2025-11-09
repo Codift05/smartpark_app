@@ -105,18 +105,18 @@ class ModernHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = Theme.of(context).colorScheme.background;
+    final textPrimary = Theme.of(context).colorScheme.onBackground;
+    final textSecondary =
+        Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey;
+    final cardColor = Theme.of(context).colorScheme.surface;
+
     return Stack(
       children: [
         Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color.fromARGB(255, 255, 255, 255),
-                Color.fromARGB(255, 255, 255, 255)
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+          decoration: BoxDecoration(
+            color: bgColor,
           ),
         ),
         Positioned(
@@ -126,7 +126,8 @@ class ModernHome extends StatelessWidget {
             width: 180,
             height: 180,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.08),
+              color: (isDark ? const Color(0xFF00D4AA) : Colors.white)
+                  .withOpacity(isDark ? 0.03 : 0.08),
               shape: BoxShape.circle,
             ),
           ),
@@ -138,7 +139,8 @@ class ModernHome extends StatelessWidget {
             width: 220,
             height: 220,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.06),
+              color: (isDark ? const Color(0xFF00D4AA) : Colors.white)
+                  .withOpacity(isDark ? 0.02 : 0.06),
               shape: BoxShape.circle,
             ),
           ),
@@ -180,7 +182,7 @@ class ModernHome extends StatelessWidget {
                                   style: GoogleFonts.poppins(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w700,
-                                    color: const Color(0xFF1A1A1A),
+                                    color: textPrimary,
                                     letterSpacing: -0.5,
                                   ),
                                 ),
@@ -191,7 +193,7 @@ class ModernHome extends StatelessWidget {
                                       'Halo, ',
                                       style: GoogleFonts.poppins(
                                         fontSize: 13,
-                                        color: Colors.black54,
+                                        color: textSecondary,
                                       ),
                                     ),
                                     Text(
@@ -212,19 +214,20 @@ class ModernHome extends StatelessWidget {
                           children: [
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: cardColor,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.05),
+                                    color: Colors.black
+                                        .withOpacity(isDark ? 0.3 : 0.05),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: IconButton(
-                                icon: const Icon(Icons.notifications_none,
-                                    color: Color(0xFF616161)),
+                                icon: Icon(Icons.notifications_none,
+                                    color: textSecondary),
                                 onPressed: () {},
                               ),
                             ),
@@ -422,21 +425,29 @@ class _HeroBannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       height: 180, // Diperbesar dari 160 ke 180
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF1E3A5F), // Dark blue
-            Color(0xFF2C5F7F), // Medium blue
-          ],
+          colors: isDark
+              ? [
+                  const Color(0xFF1A1A1A), // Darker in dark mode
+                  const Color(0xFF2A2A2A),
+                ]
+              : [
+                  const Color(0xFF1E3A5F), // Dark blue
+                  const Color(0xFF2C5F7F), // Medium blue
+                ],
         ),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF1E3A5F).withOpacity(0.3),
+            color: (isDark ? Colors.black : const Color(0xFF1E3A5F))
+                .withOpacity(0.3),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -452,7 +463,8 @@ class _HeroBannerCard extends StatelessWidget {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: (isDark ? const Color(0xFF00D4AA) : Colors.white)
+                    .withOpacity(0.05),
                 shape: BoxShape.circle,
               ),
             ),
@@ -464,7 +476,8 @@ class _HeroBannerCard extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: (isDark ? const Color(0xFF00D4AA) : Colors.white)
+                    .withOpacity(0.05),
                 shape: BoxShape.circle,
               ),
             ),
@@ -810,6 +823,10 @@ class _QuickActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = Theme.of(context).colorScheme.surface;
+    final borderColor = isDark ? const Color(0xFF374151) : Colors.black12;
+
     return _HoverableCard(
       child: Material(
         color: Colors.transparent,
@@ -819,16 +836,16 @@ class _QuickActionCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
                   blurRadius: 16,
                   offset: const Offset(0, 8),
                 ),
               ],
-              border: Border.all(color: Colors.black12),
+              border: Border.all(color: borderColor),
             ),
             child: Row(
               children: [

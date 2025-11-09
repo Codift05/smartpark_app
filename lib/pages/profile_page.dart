@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 
 import '../services/payment_service.dart';
+import '../ui/theme_provider.dart';
 import 'loading_demo_page.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -288,11 +290,24 @@ class ProfilePage extends StatelessWidget {
                               gradient: [Color(0xFF30cfd0), Color(0xFF330867)],
                             ),
                             _Divider(),
-                            const _MenuTile(
-                              icon: Icons.palette_outlined,
-                              title: 'Tema',
-                              subtitle: 'Terang',
-                              gradient: [Color(0xFFa8edea), Color(0xFFfed6e3)],
+                            Consumer<ThemeProvider>(
+                              builder: (context, themeProvider, _) {
+                                return _SwitchTile(
+                                  icon: themeProvider.isDarkMode
+                                      ? Icons.dark_mode_rounded
+                                      : Icons.light_mode_rounded,
+                                  title: 'Mode Gelap',
+                                  subtitle: themeProvider.isDarkMode
+                                      ? 'Aktif'
+                                      : 'Nonaktif',
+                                  value: themeProvider.isDarkMode,
+                                  onChanged: (_) => themeProvider.toggleTheme(),
+                                  gradient: const [
+                                    Color(0xFF1A1A1A),
+                                    Color(0xFF4A4A4A)
+                                  ],
+                                );
+                              },
                             ),
                           ],
                         ),
