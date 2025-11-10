@@ -5,10 +5,13 @@ import '../models/payment.dart';
 
 class PaymentService {
   final FirebaseFirestore db;
-  PaymentService({FirebaseFirestore? firestore}) : db = firestore ?? FirebaseFirestore.instance;
+  PaymentService({FirebaseFirestore? firestore})
+      : db = firestore ?? FirebaseFirestore.instance;
 
-  CollectionReference<Map<String, dynamic>> get _hist => db.collection('payment_history');
-  DocumentReference<Map<String, dynamic>> userDoc(String userId) => db.collection('users').doc(userId);
+  CollectionReference<Map<String, dynamic>> get _hist =>
+      db.collection('payment_history');
+  DocumentReference<Map<String, dynamic>> userDoc(String userId) =>
+      db.collection('users').doc(userId);
 
   Future<PaymentHistory> createPayment({
     required String userId,
@@ -49,12 +52,21 @@ class PaymentService {
         .where('user_id', isEqualTo: userId)
         .orderBy('timestamp', descending: true)
         .snapshots()
-        .map((snap) => snap.docs.map((d) => PaymentHistory.fromDoc(d)).toList());
+        .map(
+            (snap) => snap.docs.map((d) => PaymentHistory.fromDoc(d)).toList());
   }
 
   // Simulasi saldo user di Firestore: users/{userId}.balance
   Stream<int> balanceStream(String userId) {
-    return userDoc(userId).snapshots().map((doc) => (doc.data()?['balance'] ?? 0) as int);
+    return userDoc(userId)
+        .snapshots()
+        .map((doc) => (doc.data()?['balance'] ?? 0) as int);
+  }
+
+  Future<double> getBalance(String userId) async {
+    final doc = await userDoc(userId).get();
+    final balance = (doc.data()?['balance'] ?? 0);
+    return (balance is int) ? balance.toDouble() : (balance as double? ?? 0.0);
   }
 
   Future<void> adjustBalance(String userId, int delta) async {
