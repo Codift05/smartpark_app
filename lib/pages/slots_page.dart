@@ -1,187 +1,304 @@
 import 'package:flutter/material.dart';
-import '../ui/styles.dart';
 import '../services/mock_parking_service.dart';
 import '../models/slot.dart';
 
-class SlotsPage extends StatelessWidget {
+class SlotsPage extends StatefulWidget {
   final MockParkingService service;
   const SlotsPage({super.key, required this.service});
 
   @override
+  State<SlotsPage> createState() => _SlotsPageState();
+}
+
+class _SlotsPageState extends State<SlotsPage> {
+  String _selectedFilter = 'Semua';
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        toolbarHeight: 56,
-        centerTitle: true,
-        title:
-            const Text('Home', style: TextStyle(fontWeight: FontWeight.w600)),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.notifications_none),
-          )
-        ],
-      ),
-      body: Container(
-        decoration: const BoxDecoration(gradient: AppGradients.page),
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
         child: StreamBuilder<List<ParkingSlot>>(
-          stream: service.slotsStream,
+          stream: widget.service.slotsStream,
           builder: (context, snap) {
-            final slots = snap.data;
-            if (slots == null) {
+            if (!snap.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
-            // modern header stats
-            final occupiedCount = slots.where((s) => s.occupied).length;
-            final emptyCount = slots.length - occupiedCount;
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Area Parkir', style: AppText.h2(context)),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _statChip(
-                          context, 'Terisi', occupiedCount, AppColors.primary),
-                      _statChip(context, 'Kosong', emptyCount, Colors.green),
-                      _statChip(
-                          context, 'Total', slots.length, AppColors.textMedium),
-                    ],
+
+            final all = snap.data!;
+            final available = all.where((s) => !s.occupied).length;
+            final occupied = all.length - available;
+
+            final slots = _selectedFilter == 'Semua'
+                ? all
+                : _selectedFilter == 'Tersedia'
+                    ? all.where((s) => !s.occupied).toList()
+                    : all.where((s) => s.occupied).toList();
+
+            return Column(
+              children: [
+                // Header with gradient
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF26D0CE), Color(0xFF1A9996)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: GridView.builder(
-                      // scrollable agar tidak overflow
-                      itemCount: slots.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 1.1,
-                      ),
-                      itemBuilder: (context, index) {
-                        final slot = slots[index];
-                        final occupied = slot.occupied;
-                        return AppCard(
-                          color: occupied
-                              ? AppColors.accent.withValues(alpha: 0.06)
-                              : Colors.white,
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  child: SafeArea(
+                    bottom: false,
+                    child: Column(
+                      children: [
+                        // AppBar
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                          child: Row(
                             children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 18,
-                                    backgroundColor: occupied
-                                        ? AppColors.primary
-                                        : AppColors.textMedium
-                                            .withValues(alpha: 0.1),
-                                    child: Icon(Icons.local_parking,
-                                        color: occupied
-                                            ? Colors.white
-                                            : AppColors.primary,
-                                        size: 18),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text('Slot ${slot.id}',
-                                        style: AppText.body(context).copyWith(
-                                            fontWeight: FontWeight.w600)),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: occupied
-                                          ? AppColors.primary
-                                          : Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(
-                                          color: occupied
-                                              ? Colors.transparent
-                                              : Colors.black12),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                            occupied
-                                                ? Icons.lock
-                                                : Icons.lock_open,
-                                            size: 14,
-                                            color: occupied
-                                                ? Colors.white
-                                                : AppColors.textMedium),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          occupied ? 'Terisi' : 'Kosong',
-                                          style: AppText.caption(context)
-                                              .copyWith(
-                                                  color: occupied
-                                                      ? Colors.white
-                                                      : AppColors.textMedium),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
+                              IconButton(
+                                onPressed: () => Navigator.pop(context),
+                                icon: const Icon(Icons.arrow_back_ios,
+                                    color: Colors.white, size: 20),
                               ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Icon(Icons.schedule,
-                                      size: 14, color: Colors.black54),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    'Diperbarui ${slot.lastUpdated.hour.toString().padLeft(2, '0')}:${slot.lastUpdated.minute.toString().padLeft(2, '0')}',
-                                    style: AppText.caption(context),
+                              const Expanded(
+                                child: Text(
+                                  'Pilih Slot Parkir',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                ],
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.search,
+                                    color: Colors.white),
                               ),
                             ],
                           ),
-                        );
-                      },
+                        ),
+                        // Stat Cards
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: _buildStatCard(
+                                  icon: Icons.check_circle,
+                                  label: 'Tersedia',
+                                  value: available,
+                                  color: const Color(0xFF26D0CE),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildStatCard(
+                                  icon: Icons.cancel,
+                                  label: 'Terisi',
+                                  value: occupied,
+                                  color: const Color(0xFFEF5350),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+
+                // Filter Chips
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      _buildFilterChip('Semua'),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('Tersedia'),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('Terisi'),
+                    ],
+                  ),
+                ),
+
+                // Slots Grid
+                Expanded(
+                  child: slots.isEmpty
+                      ? const Center(child: Text('Tidak ada slot'))
+                      : GridView.builder(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          itemCount: slots.length,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 5,
+                            crossAxisSpacing: 8,
+                            mainAxisSpacing: 8,
+                            childAspectRatio: 0.9,
+                          ),
+                          itemBuilder: (context, i) {
+                            final s = slots[i];
+                            return _buildSlotCard(s);
+                          },
+                        ),
+                ),
+              ],
             );
           },
         ),
       ),
-      bottomNavigationBar: null,
     );
   }
 
-  Widget _statChip(BuildContext context, String label, int value, Color color) {
+  Widget _buildStatCard({
+    required IconData icon,
+    required String label,
+    required int value,
+    required Color color,
+  }) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withValues(alpha: 0.18)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
-          const SizedBox(width: 8),
-          Text('$label: $value',
-              style:
-                  AppText.caption(context).copyWith(color: AppColors.textDark)),
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: color, size: 20),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  '$value',
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFilterChip(String label) {
+    final isSelected = _selectedFilter == label;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _selectedFilter = label),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? const Color(0xFF26D0CE) : Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isSelected ? const Color(0xFF26D0CE) : Colors.grey[300]!,
+            ),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: isSelected ? Colors.white : Colors.black87,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSlotCard(ParkingSlot slot) {
+    final isAvailable = !slot.occupied;
+    return GestureDetector(
+      onTap: isAvailable ? () => _confirmBooking(slot) : null,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isAvailable
+              ? const Color(0xFF26D0CE).withOpacity(0.2)
+              : const Color(0xFFEF5350).withOpacity(0.2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isAvailable ? Icons.local_parking : Icons.lock,
+              color: isAvailable
+                  ? const Color(0xFF26D0CE)
+                  : const Color(0xFFEF5350),
+              size: 24,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '${slot.id}',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: isAvailable
+                    ? const Color(0xFF1A9996)
+                    : const Color(0xFFEF5350),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmBooking(ParkingSlot slot) {
+    showDialog<void>(
+      context: context,
+      builder: (c) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text('Booking Slot ${slot.id}'),
+        content: const Text('Konfirmasi booking untuk slot ini?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(c),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(c);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Slot ${slot.id} berhasil dibooking!'),
+                  backgroundColor: const Color(0xFF26D0CE),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF26D0CE),
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text('Booking'),
+          ),
         ],
       ),
     );

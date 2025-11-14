@@ -1,4 +1,4 @@
-# 📊 SmartPark UML - Mermaid Diagrams
+#  SmartPark UML - Mermaid Diagrams
 
 **Aplikasi:** SmartPark - Smart Parking Management System  
 **Format:** Mermaid.js (Compatible with GitHub, PlantUML, Markdown editors)  

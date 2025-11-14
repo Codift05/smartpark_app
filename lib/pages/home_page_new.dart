@@ -85,9 +85,6 @@ class _HomePageState extends State<HomePage> {
             ModernHome(service: service),
             const MapPage(),
             StatsPage(service: service),
-            const Center(
-                child: Text('Fitur Chat', style: TextStyle(fontSize: 24))),
-            const ProfilePage(),
           ],
         ),
       ),
@@ -106,7 +103,18 @@ class ModernHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF26D0CE),
+            Color(0xFF26D0CE),
+            Colors.white,
+          ],
+          stops: [0.0, 0.3, 0.3],
+        ),
+      ),
       child: SafeArea(
         child: StreamBuilder<List<ParkingSlot>>(
           stream: service.slotsStream,
@@ -163,86 +171,76 @@ class ModernHome extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF26D0CE),
-        borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(30),
-          bottomRight: Radius.circular(30),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Location and notification
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Location
-                Row(
-                  children: [
-                    const Icon(Icons.location_on,
-                        color: Colors.white, size: 20),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Megamall, Manado',
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Location and notification
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Location
+              Row(
+                children: [
+                  const Icon(Icons.location_on, color: Colors.white, size: 20),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Jakarta, Indonesia',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const Icon(Icons.keyboard_arrow_down,
-                        color: Colors.white, size: 20),
-                  ],
-                ),
-                // Notification Icon
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.notifications_none,
-                      color: Colors.white, size: 24),
+                  const Icon(Icons.keyboard_arrow_down,
+                      color: Colors.white, size: 20),
+                ],
+              ),
+              // Notification Icon
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(Icons.notifications_none,
+                    color: Colors.white, size: 24),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // Search Bar
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
-
-            const SizedBox(height: 16),
-
-            // Search Bar
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+            child: Row(
+              children: [
+                const Icon(Icons.search, color: Colors.grey, size: 24),
+                const SizedBox(width: 12),
+                Text(
+                  'Search Here',
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: Colors.grey,
                   ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.search, color: Colors.grey, size: 24),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Cari di sini',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -260,7 +258,7 @@ class ModernHome extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Nemu.In',
+                '#SpecialForYou',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -270,7 +268,7 @@ class ModernHome extends StatelessWidget {
               TextButton(
                 onPressed: () {},
                 child: Text(
-                  'Lihat Semua',
+                  'See All',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: const Color(0xFF26D0CE),
@@ -286,22 +284,19 @@ class ModernHome extends StatelessWidget {
 
         // Special Offer Cards Carousel
         SizedBox(
-          height: 165,
+          height: 160,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: 3,
             itemBuilder: (context, index) {
               return Container(
-                width: 320,
-                margin: const EdgeInsets.only(right: 16),
-                clipBehavior: Clip.hardEdge,
+                width: 280,
+                margin: const EdgeInsets.only(right: 12),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(16),
                   gradient: const LinearGradient(
                     colors: [Color(0xFF26D0CE), Color(0xFF1A9996)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -311,22 +306,21 @@ class ModernHome extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Badge
-                      Container(
+                child: Stack(
+                  children: [
+                    // Limited time badge
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                            horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.25),
-                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.black.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          'Waktu Terbatas!',
+                          'Limited time!',
                           style: GoogleFonts.poppins(
                             fontSize: 10,
                             color: Colors.white,
@@ -334,30 +328,32 @@ class ModernHome extends StatelessWidget {
                           ),
                         ),
                       ),
+                    ),
 
-                      // Content
-                      Column(
+                    // Content
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            'Dapatkan Penawaran\nSpesial',
+                            'Get Special Offer',
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 20,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
-                              height: 1.2,
                             ),
                           ),
-                          const SizedBox(height: 5),
+                          const SizedBox(height: 4),
                           Text(
-                            '$availableCount Slot Parkir Tersedia',
+                            '$availableCount Parking Slots Available',
                             style: GoogleFonts.poppins(
-                              fontSize: 13,
-                              color: Colors.white.withOpacity(0.95),
-                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                              color: Colors.white.withOpacity(0.9),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 12),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.push(
@@ -371,24 +367,23 @@ class ModernHome extends StatelessWidget {
                               backgroundColor: Colors.white,
                               foregroundColor: const Color(0xFF26D0CE),
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
+                                  horizontal: 20, vertical: 8),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                borderRadius: BorderRadius.circular(20),
                               ),
-                              elevation: 0,
                             ),
                             child: Text(
-                              'Ambil',
+                              'Claim',
                               style: GoogleFonts.poppins(
-                                fontSize: 13,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             },
@@ -409,7 +404,7 @@ class ModernHome extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Fitur',
+                'Category',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -419,7 +414,7 @@ class ModernHome extends StatelessWidget {
               TextButton(
                 onPressed: () {},
                 child: Text(
-                  'Lihat Semua',
+                  'See All',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: const Color(0xFF26D0CE),
@@ -442,7 +437,7 @@ class ModernHome extends StatelessWidget {
               _buildCategoryIcon(
                 context,
                 Icons.local_parking,
-                'Tersedia\n$empty Slot',
+                'Available\n$empty Slots',
                 const Color(0xFF26D0CE),
                 () {
                   Navigator.push(
@@ -456,15 +451,15 @@ class ModernHome extends StatelessWidget {
               _buildCategoryIcon(
                 context,
                 Icons.bar_chart,
-                'Statistik\n$total Total',
-                const Color(0xFF1A9996),
+                'Statistics\n$total Total',
+                const Color(0xFFFFA726),
                 () {},
               ),
               _buildCategoryIcon(
                 context,
                 Icons.history,
-                'Riwayat\nPembayaran',
-                const Color(0xFF26D0CE),
+                'History\nPayment',
+                const Color(0xFF7C3AED),
                 () {
                   Navigator.push(
                     context,
@@ -477,8 +472,8 @@ class ModernHome extends StatelessWidget {
               _buildCategoryIcon(
                 context,
                 Icons.smart_toy,
-                'Asisten\nAI',
-                const Color(0xFF1A9996),
+                'AI\nAssistant',
+                const Color(0xFFEF5350),
                 () {
                   Navigator.push(
                     context,
@@ -538,7 +533,7 @@ class ModernHome extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Area Populer',
+                'Popular Spaces',
                 style: GoogleFonts.poppins(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -555,7 +550,7 @@ class ModernHome extends StatelessWidget {
                   );
                 },
                 child: Text(
-                  'Lihat Semua',
+                  'See All',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
                     color: const Color(0xFF26D0CE),
@@ -626,7 +621,7 @@ class ModernHome extends StatelessWidget {
                               Row(
                                 children: [
                                   const Icon(Icons.star,
-                                      color: Color(0xFF1A9996), size: 16),
+                                      color: Color(0xFFFFA726), size: 16),
                                   const SizedBox(width: 4),
                                   Text(
                                     '4.9',
@@ -642,18 +637,17 @@ class ModernHome extends StatelessWidget {
                                     horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: slot.occupied
-                                      ? const Color(0xFFEF5350).withOpacity(0.1)
-                                      : const Color(0xFF26D0CE)
-                                          .withOpacity(0.1),
+                                      ? Colors.red.withOpacity(0.1)
+                                      : Colors.green.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
-                                  slot.occupied ? 'Terisi' : 'Tersedia',
+                                  slot.occupied ? 'Occupied' : 'Available',
                                   style: GoogleFonts.poppins(
                                     fontSize: 10,
                                     color: slot.occupied
-                                        ? const Color(0xFFEF5350)
-                                        : const Color(0xFF26D0CE),
+                                        ? Colors.red
+                                        : Colors.green,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -750,19 +744,19 @@ class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
             children: [
               _NavItem(
                 icon: Icons.home_rounded,
-                label: 'Beranda',
+                label: 'Home',
                 isSelected: widget.currentIndex == 0,
                 onTap: () => _onItemTapped(0),
               ),
               _NavItem(
-                icon: Icons.map_outlined,
-                label: 'Peta',
+                icon: Icons.explore_outlined,
+                label: 'Explore',
                 isSelected: widget.currentIndex == 1,
                 onTap: () => _onItemTapped(1),
               ),
               _NavItem(
-                icon: Icons.bar_chart_rounded,
-                label: 'Statistik',
+                icon: Icons.favorite_border,
+                label: 'Favorite',
                 isSelected: widget.currentIndex == 2,
                 onTap: () => _onItemTapped(2),
               ),
@@ -774,7 +768,7 @@ class _ModernFloatingNavBarState extends State<_ModernFloatingNavBar>
               ),
               _NavItem(
                 icon: Icons.person_outline,
-                label: 'Profil',
+                label: 'Profile',
                 isSelected: widget.currentIndex == 4,
                 onTap: () => _onItemTapped(4),
               ),

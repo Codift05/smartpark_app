@@ -1,4 +1,4 @@
-# 📊 Dokumentasi UML SmartPark App
+#  Dokumentasi UML SmartPark App
 
 **Aplikasi:** SmartPark - Smart Parking Management System  
 **Platform:** Flutter (Android, iOS, Web)  
@@ -7,7 +7,7 @@
 
 ---
 
-## 📑 Daftar Isi
+##  Daftar Isi
 
 1. [Use Case Diagram](#1-use-case-diagram)
 2. [Activity Diagram](#2-activity-diagram)
@@ -1220,7 +1220,7 @@ Berdasarkan UML ini, sistem dapat dikembangkan dengan:
 
 ---
 
-## 📝 Catatan Penggunaan Dokumen
+##  Catatan Penggunaan Dokumen
 
 Dokumen UML ini dapat digunakan untuk:
 

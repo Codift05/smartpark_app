@@ -93,14 +93,14 @@ class _LoginPageState extends State<LoginPage> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFF00C9A7),
-                        Color(0xFF00D9B5),
+                        Color(0xFF26D0CE),
+                        Color(0xFF1A9996),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF00C9A7).withValues(alpha: 0.3),
+                        color: const Color(0xFF26D0CE).withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -226,13 +226,13 @@ class _LoginPageState extends State<LoginPage> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00C9A7)
+                                  color: const Color(0xFF26D0CE)
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
-                                  Icons.email_outlined,
-                                  color: Color(0xFF00C9A7),
+                                  Icons.lock_outline,
+                                  color: Color(0xFF26D0CE),
                                   size: 20,
                                 ),
                               ),
@@ -252,7 +252,7 @@ class _LoginPageState extends State<LoginPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: const BorderSide(
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF26D0CE),
                                   width: 2,
                                 ),
                               ),
@@ -301,13 +301,13 @@ class _LoginPageState extends State<LoginPage> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00C9A7)
+                                  color: const Color(0xFF26D0CE)
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
                                   Icons.lock_outline_rounded,
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF26D0CE),
                                   size: 20,
                                 ),
                               ),
@@ -338,7 +338,7 @@ class _LoginPageState extends State<LoginPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: const BorderSide(
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF26D0CE),
                                   width: 2,
                                 ),
                               ),
@@ -373,14 +373,14 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               onPressed: loading ? null : _signIn,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF00C9A7),
+                                backgroundColor: const Color(0xFF26D0CE),
                                 foregroundColor: Colors.white,
                                 elevation: 0,
                                 shadowColor: Colors.transparent,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
-                                disabledBackgroundColor: const Color(0xFF00C9A7)
+                                disabledBackgroundColor: const Color(0xFF26D0CE)
                                     .withValues(alpha: 0.6),
                               ),
                               child: loading
@@ -436,7 +436,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF00C9A7),
+                          color: const Color(0xFF26D0CE),
                         ),
                       ),
                     ),
