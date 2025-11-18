@@ -41,7 +41,7 @@ class _SlotsPageState extends State<SlotsPage> {
                 Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Color(0xFF26D0CE), Color(0xFF1A9996)],
+                      colors: [Color(0xFF1A3D64), Color(0xFF1D546C)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -89,7 +89,7 @@ class _SlotsPageState extends State<SlotsPage> {
                                   icon: Icons.check_circle,
                                   label: 'Tersedia',
                                   value: available,
-                                  color: const Color(0xFF26D0CE),
+                                  color: const Color(0xFF1A3D64),
                                 ),
                               ),
                               const SizedBox(width: 12),
@@ -210,10 +210,10 @@ class _SlotsPageState extends State<SlotsPage> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF26D0CE) : Colors.white,
+            color: isSelected ? const Color(0xFF1A3D64) : Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected ? const Color(0xFF26D0CE) : Colors.grey[300]!,
+              color: isSelected ? const Color(0xFF1A3D64) : Colors.grey[300]!,
             ),
           ),
           child: Text(
@@ -237,7 +237,7 @@ class _SlotsPageState extends State<SlotsPage> {
       child: Container(
         decoration: BoxDecoration(
           color: isAvailable
-              ? const Color(0xFF26D0CE).withOpacity(0.2)
+              ? const Color(0xFF1A3D64).withOpacity(0.2)
               : const Color(0xFFEF5350).withOpacity(0.2),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -247,7 +247,7 @@ class _SlotsPageState extends State<SlotsPage> {
             Icon(
               isAvailable ? Icons.local_parking : Icons.lock,
               color: isAvailable
-                  ? const Color(0xFF26D0CE)
+                  ? const Color(0xFF1A3D64)
                   : const Color(0xFFEF5350),
               size: 24,
             ),
@@ -258,7 +258,7 @@ class _SlotsPageState extends State<SlotsPage> {
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: isAvailable
-                    ? const Color(0xFF1A9996)
+                    ? const Color(0xFF1D546C)
                     : const Color(0xFFEF5350),
               ),
             ),
@@ -286,12 +286,12 @@ class _SlotsPageState extends State<SlotsPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('Slot ${slot.id} berhasil dibooking!'),
-                  backgroundColor: const Color(0xFF26D0CE),
+                  backgroundColor: const Color(0xFF1A3D64),
                 ),
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF26D0CE),
+              backgroundColor: const Color(0xFF1A3D64),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

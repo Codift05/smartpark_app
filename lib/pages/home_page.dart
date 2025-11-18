@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/slot.dart';
 import '../services/mock_parking_service.dart';
@@ -61,6 +62,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF0C2B4E),
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     return Scaffold(
       appBar: null,
       extendBody: true,
@@ -108,6 +115,7 @@ class ModernHome extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: SafeArea(
+        top: false,
         child: StreamBuilder<List<ParkingSlot>>(
           stream: service.slotsStream,
           builder: (context, snap) {
@@ -138,7 +146,7 @@ class ModernHome extends StatelessWidget {
                         // Special Offers Section
                         _buildSpecialOffersSection(context, slots),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 16),
 
                         // Category Section
                         _buildCategorySection(
@@ -165,14 +173,14 @@ class ModernHome extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFF26D0CE),
+        color: Color(0xFF0C2B4E),
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(30),
           bottomRight: Radius.circular(30),
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+        padding: const EdgeInsets.fromLTRB(16, 48, 16, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -273,7 +281,7 @@ class ModernHome extends StatelessWidget {
                   'Lihat Semua',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: const Color(0xFF26D0CE),
+                    color: const Color(0xFF1D546C),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -286,109 +294,110 @@ class ModernHome extends StatelessWidget {
 
         // Special Offer Cards Carousel
         SizedBox(
-          height: 165,
+          height: 200,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.zero,
             itemCount: 3,
             itemBuilder: (context, index) {
-              return Container(
-                width: 320,
-                margin: const EdgeInsets.only(right: 16),
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF26D0CE), Color(0xFF1A9996)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF26D0CE).withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.25),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          'Waktu Terbatas!',
-                          style: GoogleFonts.poppins(
-                            fontSize: 10,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+              return SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Stack(
+                  children: [
+                    // Banner Image - Full Background
+                    Positioned.fill(
+                      child: Image.asset(
+                        'lib/img/banner 3.png',
+                        fit: BoxFit.cover,
                       ),
-
-                      // Content
-                      Column(
+                    ),
+                    // Content
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 32, right: 20, top: 16, bottom: 16),
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          const SizedBox(height: 8),
+                          // Badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.25),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              'Waktu Terbatas!',
+                              style: GoogleFonts.poppins(
+                                fontSize: 7,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // Content
                           Text(
                             'Dapatkan Penawaran\nSpesial',
                             style: GoogleFonts.poppins(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                               height: 1.2,
                             ),
+                            maxLines: 2,
+                            overflow: TextOverflow.visible,
                           ),
-                          const SizedBox(height: 5),
+                          const SizedBox(height: 6),
                           Text(
                             '$availableCount Slot Parkir Tersedia',
                             style: GoogleFonts.poppins(
-                              fontSize: 13,
+                              fontSize: 11,
                               color: Colors.white.withOpacity(0.95),
                               fontWeight: FontWeight.w500,
                             ),
+                            maxLines: 1,
+                            overflow: TextOverflow.visible,
                           ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => SlotsPage(service: service),
+                          const SizedBox(height: 18),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => SlotsPage(service: service),
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: const Color(0xFF1A3D64),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 28, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: const Color(0xFF26D0CE),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
+                                elevation: 0,
                               ),
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              'Ambil',
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
+                              child: Text(
+                                'Ambil',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             },
@@ -400,12 +409,24 @@ class ModernHome extends StatelessWidget {
 
   Widget _buildCategorySection(
       BuildContext context, int occupied, int empty, int total) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
@@ -422,28 +443,25 @@ class ModernHome extends StatelessWidget {
                   'Lihat Semua',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: const Color(0xFF26D0CE),
+                    color: const Color(0xFF1D546C),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ),
-        ),
 
-        const SizedBox(height: 12),
+          const SizedBox(height: 16),
 
-        // Category Icons
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
+          // Category Icons
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildCategoryIcon(
                 context,
-                Icons.local_parking,
+                'lib/img/slot.png',
                 'Tersedia\n$empty Slot',
-                const Color(0xFF26D0CE),
+                const Color(0xFF1A3D64),
                 () {
                   Navigator.push(
                     context,
@@ -455,16 +473,16 @@ class ModernHome extends StatelessWidget {
               ),
               _buildCategoryIcon(
                 context,
-                Icons.bar_chart,
+                'lib/img/statistik.png',
                 'Statistik\n$total Total',
-                const Color(0xFF1A9996),
+                const Color(0xFF1D546C),
                 () {},
               ),
               _buildCategoryIcon(
                 context,
-                Icons.history,
+                'lib/img/riwayat.png',
                 'Riwayat\nPembayaran',
-                const Color(0xFF26D0CE),
+                const Color(0xFF1A3D64),
                 () {
                   Navigator.push(
                     context,
@@ -476,9 +494,9 @@ class ModernHome extends StatelessWidget {
               ),
               _buildCategoryIcon(
                 context,
-                Icons.smart_toy,
+                'lib/img/asisstant ai.png',
                 'Asisten\nAI',
-                const Color(0xFF1A9996),
+                const Color(0xFF1D546C),
                 () {
                   Navigator.push(
                     context,
@@ -490,25 +508,22 @@ class ModernHome extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget _buildCategoryIcon(BuildContext context, IconData icon, String label,
-      Color color, VoidCallback onTap) {
+  Widget _buildCategoryIcon(BuildContext context, String imagePath,
+      String label, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
         children: [
           Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: Icon(icon, color: color, size: 30),
+            width: 75,
+            height: 75,
+            padding: const EdgeInsets.all(10),
+            child: Image.asset(imagePath, fit: BoxFit.contain),
           ),
           const SizedBox(height: 8),
           Text(
@@ -558,7 +573,7 @@ class ModernHome extends StatelessWidget {
                   'Lihat Semua',
                   style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: const Color(0xFF26D0CE),
+                    color: const Color(0xFF1D546C),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -595,21 +610,25 @@ class ModernHome extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Image placeholder
+                    // Banner Image
                     Container(
                       height: 120,
                       decoration: BoxDecoration(
-                        color: Colors.grey[200],
+                        color: Colors.grey[50],
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(16),
                           topRight: Radius.circular(16),
                         ),
                       ),
-                      child: Center(
-                        child: Icon(
-                          Icons.local_parking,
-                          size: 48,
-                          color: Colors.grey[400],
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16),
+                        ),
+                        child: Image.asset(
+                          'lib/img/banner 5.png',
+                          width: double.infinity,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
@@ -626,7 +645,7 @@ class ModernHome extends StatelessWidget {
                               Row(
                                 children: [
                                   const Icon(Icons.star,
-                                      color: Color(0xFF1A9996), size: 16),
+                                      color: Color(0xFF1D546C), size: 16),
                                   const SizedBox(width: 4),
                                   Text(
                                     '4.9',
@@ -643,7 +662,7 @@ class ModernHome extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   color: slot.occupied
                                       ? const Color(0xFFEF5350).withOpacity(0.1)
-                                      : const Color(0xFF26D0CE)
+                                      : const Color(0xFF1A3D64)
                                           .withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -653,7 +672,7 @@ class ModernHome extends StatelessWidget {
                                     fontSize: 10,
                                     color: slot.occupied
                                         ? const Color(0xFFEF5350)
-                                        : const Color(0xFF26D0CE),
+                                        : const Color(0xFF1A3D64),
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -801,7 +820,7 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF26D0CE);
+    const primaryColor = Color(0xFF1A3D64);
 
     return Expanded(
       child: Material(
