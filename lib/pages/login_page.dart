@@ -93,14 +93,14 @@ class _LoginPageState extends State<LoginPage> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFF26D0CE),
-                        Color(0xFF1A9996),
+                        Color(0xFF1A3D64),
+                        Color(0xFF1D546C),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF26D0CE).withValues(alpha: 0.3),
+                        color: const Color(0xFF1A3D64).withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -110,16 +110,22 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(24),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Image.asset(
-                        'lib/img/Logo Nemu.in.png',
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.local_parking_rounded,
-                            size: 48,
-                            color: Colors.white,
-                          );
-                        },
+                      child: ColorFiltered(
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                        child: Image.asset(
+                          'lib/img/Logo Nemu.in.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(
+                              Icons.local_parking_rounded,
+                              size: 48,
+                              color: Colors.white,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -226,13 +232,13 @@ class _LoginPageState extends State<LoginPage> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF26D0CE)
+                                  color: const Color(0xFF1A3D64)
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
                                   Icons.lock_outline,
-                                  color: Color(0xFF26D0CE),
+                                  color: Color(0xFF1A3D64),
                                   size: 20,
                                 ),
                               ),
@@ -252,7 +258,7 @@ class _LoginPageState extends State<LoginPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: const BorderSide(
-                                  color: Color(0xFF26D0CE),
+                                  color: Color(0xFF1A3D64),
                                   width: 2,
                                 ),
                               ),
@@ -301,13 +307,13 @@ class _LoginPageState extends State<LoginPage> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF26D0CE)
+                                  color: const Color(0xFF1A3D64)
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
                                   Icons.lock_outline_rounded,
-                                  color: Color(0xFF26D0CE),
+                                  color: Color(0xFF1A3D64),
                                   size: 20,
                                 ),
                               ),
@@ -338,7 +344,7 @@ class _LoginPageState extends State<LoginPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: const BorderSide(
-                                  color: Color(0xFF26D0CE),
+                                  color: Color(0xFF1A3D64),
                                   width: 2,
                                 ),
                               ),
@@ -373,14 +379,14 @@ class _LoginPageState extends State<LoginPage> {
                             child: ElevatedButton(
                               onPressed: loading ? null : _signIn,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF26D0CE),
+                                backgroundColor: const Color(0xFF1A3D64),
                                 foregroundColor: Colors.white,
                                 elevation: 0,
                                 shadowColor: Colors.transparent,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
-                                disabledBackgroundColor: const Color(0xFF26D0CE)
+                                disabledBackgroundColor: const Color(0xFF1A3D64)
                                     .withValues(alpha: 0.6),
                               ),
                               child: loading
@@ -436,7 +442,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF26D0CE),
+                          color: const Color(0xFF1A3D64),
                         ),
                       ),
                     ),

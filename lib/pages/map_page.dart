@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,6 +29,12 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF0C2B4E),
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     _markerController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -77,6 +84,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      top: false,
       bottom: false, // Biarkan navbar HomePage tetap terlihat
       child: Stack(
         children: [
@@ -113,8 +121,8 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
                                   colors: [
-                                    Color(0xFF7FFFE0),
-                                    Color(0xFF00D4AA)
+                                    Color(0xFF1A3D64),
+                                    Color(0xFF1D546C)
                                   ],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
@@ -122,7 +130,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
-                                    color: const Color(0xFF00D4AA)
+                                    color: const Color(0xFF1A3D64)
                                         .withValues(alpha: 0.4),
                                     blurRadius: 15,
                                     spreadRadius: 2,
@@ -133,16 +141,23 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                               child: ClipOval(
                                 child: Padding(
                                   padding: const EdgeInsets.all(12),
-                                  child: Image.asset(
-                                    'lib/img/Logo Nemu.in.png',
-                                    fit: BoxFit.contain,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Icon(
-                                        Icons.local_parking,
-                                        color: Colors.white,
-                                        size: 28,
-                                      );
-                                    },
+                                  child: ColorFiltered(
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                    child: Image.asset(
+                                      'lib/img/Logo Nemu.in.png',
+                                      fit: BoxFit.contain,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return const Icon(
+                                          Icons.local_parking,
+                                          color: Colors.white,
+                                          size: 28,
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
@@ -171,7 +186,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                       fontSize: 16,
                     ),
                     prefixIcon:
-                        const Icon(Icons.search, color: Color(0xFF00D4AA)),
+                        const Icon(Icons.search, color: Color(0xFF1A3D64)),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -198,7 +213,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           'Pusatkan ke lokasi saya',
                           style: GoogleFonts.poppins(),
                         ),
-                        backgroundColor: const Color(0xFF00D4AA),
+                        backgroundColor: const Color(0xFF1A3D64),
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -219,7 +234,7 @@ class _MapPageState extends State<MapPage> with TickerProviderStateMixin {
                           'Ubah layer peta',
                           style: GoogleFonts.poppins(),
                         ),
-                        backgroundColor: const Color(0xFF00D4AA),
+                        backgroundColor: const Color(0xFF1A3D64),
                         behavior: SnackBarBehavior.floating,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -362,12 +377,12 @@ class _ModernFilterChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
             color: selected
-                ? const Color(0xFF00D4AA).withValues(alpha: 0.2)
+                ? const Color(0xFF1A3D64).withValues(alpha: 0.2)
                 : Colors.white.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(25),
             border: Border.all(
               color: selected
-                  ? const Color(0xFF00D4AA)
+                  ? const Color(0xFF1A3D64)
                   : Colors.grey.withValues(alpha: 0.3),
               width: 1,
             ),
@@ -384,7 +399,7 @@ class _ModernFilterChip extends StatelessWidget {
             style: GoogleFonts.poppins(
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: selected ? const Color(0xFF00D4AA) : Colors.black87,
+              color: selected ? const Color(0xFF1A3D64) : Colors.black87,
             ),
           ),
         ),
@@ -461,7 +476,7 @@ class _ModernInfoCard extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFF7FFFE0), Color(0xFF00D4AA)],
+                      colors: [Color(0xFF1A3D64), Color(0xFF1D546C)],
                     ),
                     borderRadius: BorderRadius.circular(25),
                   ),
@@ -488,7 +503,7 @@ class _ModernInfoCard extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () {},
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF00D4AA)),
+                    side: const BorderSide(color: Color(0xFF1A3D64)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
                     ),
@@ -498,7 +513,7 @@ class _ModernInfoCard extends StatelessWidget {
                       style: GoogleFonts.poppins(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF00D4AA))),
+                          color: const Color(0xFF1A3D64))),
                 ),
               ),
             ],
@@ -585,7 +600,7 @@ class _ModernFABState extends State<_ModernFAB>
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF00D4AA).withValues(alpha: 0.2),
+                      color: const Color(0xFF1A3D64).withValues(alpha: 0.2),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                     ),
@@ -608,7 +623,7 @@ class _ModernFABState extends State<_ModernFAB>
                     child: Center(
                       child: Icon(
                         widget.icon,
-                        color: const Color(0xFF00D4AA),
+                        color: const Color(0xFF1A3D64),
                         size: 24,
                       ),
                     ),

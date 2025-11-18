@@ -122,14 +122,14 @@ class _SignUpPageState extends State<SignUpPage> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFF00C9A7),
-                        Color(0xFF00D9B5),
+                        Color(0xFF1A3D64),
+                        Color(0xFF1D546C),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF00C9A7).withValues(alpha: 0.3),
+                        color: const Color(0xFF1A3D64).withValues(alpha: 0.3),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -139,16 +139,22 @@ class _SignUpPageState extends State<SignUpPage> {
                     borderRadius: BorderRadius.circular(24),
                     child: Padding(
                       padding: const EdgeInsets.all(16),
-                      child: Image.asset(
-                        'lib/img/Logo Nemu.in.png',
-                        fit: BoxFit.contain,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(
-                            Icons.person_add_rounded,
-                            size: 40,
-                            color: Colors.white,
-                          );
-                        },
+                      child: ColorFiltered(
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
+                        child: Image.asset(
+                          'lib/img/Logo Nemu.in.png',
+                          fit: BoxFit.contain,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(
+                              Icons.person_add_rounded,
+                              size: 40,
+                              color: Colors.white,
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -255,13 +261,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00C9A7)
+                                  color: const Color(0xFF1A3D64)
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
                                   Icons.person_outline_rounded,
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF1A3D64),
                                   size: 20,
                                 ),
                               ),
@@ -281,7 +287,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: const BorderSide(
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF1A3D64),
                                   width: 2,
                                 ),
                               ),
@@ -330,13 +336,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00C9A7)
+                                  color: const Color(0xFF1A3D64)
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
                                   Icons.lock_outline_rounded,
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF1A3D64),
                                   size: 20,
                                 ),
                               ),
@@ -367,7 +373,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: const BorderSide(
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF1A3D64),
                                   width: 2,
                                 ),
                               ),
@@ -417,13 +423,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                 margin: const EdgeInsets.all(12),
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00C9A7)
+                                  color: const Color(0xFF1A3D64)
                                       .withValues(alpha: 0.1),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
                                   Icons.lock_outline_rounded,
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF1A3D64),
                                   size: 20,
                                 ),
                               ),
@@ -454,7 +460,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
                                 borderSide: const BorderSide(
-                                  color: Color(0xFF00C9A7),
+                                  color: Color(0xFF1A3D64),
                                   width: 2,
                                 ),
                               ),
@@ -486,14 +492,14 @@ class _SignUpPageState extends State<SignUpPage> {
                             child: ElevatedButton(
                               onPressed: loading ? null : _signUp,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF00C9A7),
+                                backgroundColor: const Color(0xFF1A3D64),
                                 foregroundColor: Colors.white,
                                 elevation: 0,
                                 shadowColor: Colors.transparent,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
-                                disabledBackgroundColor: const Color(0xFF00C9A7)
+                                disabledBackgroundColor: const Color(0xFF1A3D64)
                                     .withValues(alpha: 0.6),
                               ),
                               child: loading
@@ -541,7 +547,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF00C9A7),
+                          color: const Color(0xFF1A3D64),
                         ),
                       ),
                     ),

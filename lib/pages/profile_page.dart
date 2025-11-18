@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -45,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Foto profil berhasil diubah!'),
-            backgroundColor: Color(0xFF00D4AA),
+            backgroundColor: Color(0xFF1A3D64),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -55,6 +56,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF0C2B4E),
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
+
     final uid = FirebaseAuth.instance.currentUser?.uid;
     final service = PaymentService(firestore: FirebaseFirestore.instance);
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -68,6 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
+        top: false,
         child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
           stream: userDoc.snapshots(),
           builder: (context, snap) {
@@ -82,7 +91,7 @@ class _ProfilePageState extends State<ProfilePage> {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  // Cyan Header
+                  // Navy Header
                   Container(
                     width: double.infinity,
                     decoration: const BoxDecoration(
@@ -90,15 +99,15 @@ class _ProfilePageState extends State<ProfilePage> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Color(0xFF00D4AA),
-                          Color(0xFF00B894),
+                          Color(0xFF1A3D64),
+                          Color(0xFF1D546C),
                         ],
                       ),
                       borderRadius: BorderRadius.vertical(
                         bottom: Radius.circular(30),
                       ),
                     ),
-                    padding: const EdgeInsets.fromLTRB(20, 16, 20, 30),
+                    padding: const EdgeInsets.fromLTRB(20, 48, 20, 30),
                     child: Column(
                       children: [
                         // Top Bar
@@ -186,7 +195,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ? const Icon(
                                           Icons.person_rounded,
                                           size: 50,
-                                          color: Color(0xFF00D4AA),
+                                          color: Color(0xFF1A3D64),
                                         )
                                       : null,
                                 ),
@@ -200,14 +209,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     color: Colors.white,
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: const Color(0xFF00D4AA),
+                                      color: const Color(0xFF1A3D64),
                                       width: 2,
                                     ),
                                   ),
                                   child: const Icon(
                                     Icons.camera_alt_rounded,
                                     size: 14,
-                                    color: Color(0xFF00D4AA),
+                                    color: Color(0xFF1A3D64),
                                   ),
                                 ),
                               ),
@@ -399,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 12),
                         _MenuItem(
                           icon: Icons.lock_outline_rounded,
-                          iconColor: const Color(0xFF00D4AA),
+                          iconColor: const Color(0xFF1A3D64),
                           title: 'Keamanan',
                           subtitle: 'Password & verifikasi',
                           isDark: isDark,
@@ -445,6 +454,142 @@ class _ProfilePageState extends State<ProfilePage> {
                               onChanged: (_) => themeProvider.toggleTheme(),
                             );
                           },
+                        ),
+                        const SizedBox(height: 24),
+
+                        // Logout Button
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text(
+                                    'Keluar',
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  content: Text(
+                                    'Apakah Anda yakin ingin keluar?',
+                                    style: GoogleFonts.poppins(),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text(
+                                        'Batal',
+                                        style: GoogleFonts.poppins(
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: Text(
+                                        'Keluar',
+                                        style: GoogleFonts.poppins(
+                                          color: const Color(0xFFEF5350),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirm == true && context.mounted) {
+                                await FirebaseAuth.instance.signOut();
+                                if (context.mounted) {
+                                  Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/login',
+                                    (route) => false,
+                                  );
+                                }
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(16),
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? const Color(0xFF2A2A2A)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color:
+                                      const Color(0xFFEF5350).withOpacity(0.3),
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black
+                                        .withOpacity(isDark ? 0.3 : 0.05),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFEF5350)
+                                          .withOpacity(0.1),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.logout_rounded,
+                                      color: Color(0xFFEF5350),
+                                      size: 24,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Keluar',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFFEF5350),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(
+                                          'Logout dari akun Anda',
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 12,
+                                            color: isDark
+                                                ? Colors.white70
+                                                : Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 16,
+                                    color: isDark
+                                        ? Colors.white38
+                                        : Colors.black38,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 40),
                       ],

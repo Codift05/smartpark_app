@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
@@ -25,6 +26,12 @@ class _AssistantPageState extends State<AssistantPage>
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF0C2B4E),
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1500),
@@ -294,23 +301,24 @@ class _AssistantPageState extends State<AssistantPage>
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
+        top: false,
         child: Column(
           children: [
             // Modern Header
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(20, 48, 20, 20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF7C3AED), // Purple
-                    Color(0xFF6366F1), // Indigo
+                    Color(0xFF1A3D64),
+                    Color(0xFF1D546C),
                   ],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF7C3AED).withOpacity(0.3),
+                    color: const Color(0xFF1A3D64).withOpacity(0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -350,10 +358,15 @@ class _AssistantPageState extends State<AssistantPage>
                         ),
                       ],
                     ),
-                    child: const Icon(
-                      Icons.smart_toy_rounded,
-                      color: Color(0xFF7C3AED), // Purple
-                      size: 24,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Image.asset(
+                          'lib/img/asisstant ai.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -429,12 +442,9 @@ class _AssistantPageState extends State<AssistantPage>
                           Container(
                             width: 100,
                             height: 100,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF7C3AED),
-                                  Color(0xFF6366F1)
-                                ], // Purple
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Color(0xFF1A3D64), Color(0xFF1D546C)],
                               ),
                               shape: BoxShape.circle,
                             ),
@@ -546,8 +556,8 @@ class _AssistantPageState extends State<AssistantPage>
                               ? null
                               : const LinearGradient(
                                   colors: [
-                                    Color(0xFF7C3AED), // Purple
-                                    Color(0xFF6366F1) // Indigo
+                                    Color(0xFF1A3D64),
+                                    Color(0xFF1D546C)
                                   ],
                                 ),
                           color: _isTyping ? Colors.grey : null,
@@ -556,7 +566,7 @@ class _AssistantPageState extends State<AssistantPage>
                               ? null
                               : [
                                   BoxShadow(
-                                    color: const Color(0xFF7C3AED)
+                                    color: const Color(0xFF1A3D64)
                                         .withOpacity(0.4),
                                     blurRadius: 12,
                                     offset: const Offset(0, 4),
@@ -596,15 +606,25 @@ class _AssistantPageState extends State<AssistantPage>
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF7C3AED), Color(0xFF6366F1)], // Purple
-                ),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(
-                Icons.smart_toy_rounded,
                 color: Colors.white,
-                size: 20,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Image.asset(
+                    'lib/img/asisstant ai.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -614,7 +634,7 @@ class _AssistantPageState extends State<AssistantPage>
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: message.isUser
-                    ? const Color(0xFF7C3AED) // Purple untuk user bubble
+                    ? const Color(0xFF1A3D64)
                     : (isDark ? const Color(0xFF2A2A2A) : Colors.white),
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(20),
@@ -689,15 +709,25 @@ class _AssistantPageState extends State<AssistantPage>
             width: 36,
             height: 36,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF7C3AED), Color(0xFF6366F1)], // Purple
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.smart_toy_rounded,
               color: Colors.white,
-              size: 20,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Padding(
+                padding: const EdgeInsets.all(6),
+                child: Image.asset(
+                  'lib/img/asisstant ai.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -749,8 +779,7 @@ class _AssistantPageState extends State<AssistantPage>
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color:
-                  isDark ? Colors.white70 : const Color(0xFF7C3AED), // Purple
+              color: isDark ? Colors.white70 : const Color(0xFF1A3D64),
               shape: BoxShape.circle,
             ),
           ),

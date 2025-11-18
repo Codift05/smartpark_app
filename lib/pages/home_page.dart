@@ -92,8 +92,7 @@ class _HomePageState extends State<HomePage> {
             ModernHome(service: service),
             const MapPage(),
             StatsPage(service: service),
-            const Center(
-                child: Text('Fitur Chat', style: TextStyle(fontSize: 24))),
+            const AssistantPage(),
             const ProfilePage(),
           ],
         ),
