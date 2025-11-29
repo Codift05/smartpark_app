@@ -73,6 +73,12 @@ android/, ios/, windows/, linux/, macos/ // artefak platform
 ## Kontribusi
 Kontribusi sangat diterima. Buat branch fitur, lakukan perubahan terfokus, sertakan deskripsi yang jelas pada PR, dan pastikan lint serta test berjalan.
 
+## Kontributor
+- [Codift05](https://github.com/Codift05)
+- [FlxSlm](https://github.com/FlxSlm)
+- [edwardsajaaa](https://github.com/edwardsajaaa)
+- [Patricklumowa](https://github.com/Patricklumowa)
+
 ## Catatan
 - Proyek ini difokuskan sebagai contoh/starting point aplikasi parkir dengan data simulasi.
 - Penyesuaian data nyata, integrasi API, dan state management lanjutan dapat ditambahkan sesuai kebutuhan.
