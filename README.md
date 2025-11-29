@@ -74,10 +74,38 @@ android/, ios/, windows/, linux/, macos/ // artefak platform
 Kontribusi sangat diterima. Buat branch fitur, lakukan perubahan terfokus, sertakan deskripsi yang jelas pada PR, dan pastikan lint serta test berjalan.
 
 ## Kontributor
-- [Codift05](https://github.com/Codift05)
-- [FlxSlm](https://github.com/FlxSlm)
-- [edwardsajaaa](https://github.com/edwardsajaaa)
-- [Patricklumowa](https://github.com/Patricklumowa)
+<table>
+  <tr>
+    <td align="center">
+      <a href="https://github.com/Codift05">
+        <img src="https://github.com/Codift05.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>Codift05</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/FlxSlm">
+        <img src="https://github.com/FlxSlm.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>FlxSlm</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/edwardsajaaa">
+        <img src="https://github.com/edwardsajaaa.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>edwardsajaaa</b></sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/Patricklumowa">
+        <img src="https://github.com/Patricklumowa.png" width="100px;" alt=""/>
+        <br />
+        <sub><b>Patricklumowa</b></sub>
+      </a>
+    </td>
+  </tr>
+</table>
 
 ## Catatan
 - Proyek ini difokuskan sebagai contoh/starting point aplikasi parkir dengan data simulasi.
