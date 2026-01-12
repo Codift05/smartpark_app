@@ -29,6 +29,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  
+  # Firebase Mocks untuk testing
+  firebase_auth_mocks: ^0.13.0
+  fake_cloud_firestore: ^2.5.0
+  
+  # Mocking Libraries
+  mockito: ^5.4.4
+  build_runner: ^2.4.6
 
 flutter:
   uses-material-design: true
